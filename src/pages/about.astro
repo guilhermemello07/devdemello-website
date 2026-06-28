@@ -1,0 +1,244 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Reveal from '../components/Reveal.astro';
+import Timeline from '../components/Timeline.astro';
+import SpeakingList from '../components/SpeakingList.astro';
+
+const timelineItems = [
+  {
+    when: '2024 — Present',
+    role: 'Senior iOS Engineer',
+    org: 'EIDA Solutions',
+    place: 'Dublin, Ireland',
+    note: 'End-to-end native iOS for construction field workflows; 99%+ crash-free; led RxSwift→Combine & UIKit→SwiftUI modernisation; Slope Verification smart-annotation feature (PDFTron).',
+  },
+  {
+    when: '2022 — Present',
+    role: 'iOS Developer (side projects)',
+    org: 'GEM TechLabs AI',
+    note: 'Shipping consumer apps end-to-end; production AI via the Anthropic Claude API (FoodLens, Jornada).',
+  },
+  {
+    when: '2021 — 2023',
+    role: 'iOS Developer & President of the Bidding Committee',
+    org: 'Cabo Frio City Hall',
+    place: 'Brazil',
+    note: 'Internal iOS apps across finance, healthcare, social-assistance; secure data handling for citizen data.',
+  },
+  {
+    when: '2020 — 2021',
+    role: 'iOS Developer',
+    org: 'MM Trade Group',
+    note: 'Shipped two native iOS apps end-to-end (Swift/UIKit), full lifecycle to App Store.',
+  },
+];
+
+const speakingItems = [
+  {
+    when: 'Sept 2026',
+    title: 'iOSDevUK',
+    detail: 'Conference speaker',
+    upcoming: true,
+  },
+  {
+    when: '2025',
+    title: 'WWDC25 — Apple Park',
+    detail: 'Invited attendee',
+  },
+  {
+    when: 'Ongoing',
+    title: 'Native iOS community talks',
+    detail: 'Various speaking engagements',
+  },
+];
+
+const chips = [
+  'WWDC25',
+  'iOSDevUK speaker',
+  'B.Sc. CS · ATU (expected 2027)',
+  'Hacking with Swift+ · 4y',
+];
+---
+
+<BaseLayout
+  title="About · Guilherme de Mello"
+  description="Senior iOS Engineer based in Dublin. 6+ years building crash-free Swift apps — from architecture to App Store. Speaker, WWDC25 attendee, and indie dev."
+>
+  <!-- ── Intro ───────────────────────────────────────────────────── -->
+  <Reveal as="section" class="section about-intro">
+    <div class="container">
+      <div class="intro-grid">
+
+        <!-- Photo-optional visual: Swift-orange monogram -->
+        <div class="intro-visual" aria-hidden="true">
+          <div class="monogram-block">
+            <span class="monogram-text serif">GM</span>
+            <span class="monogram-dot accent">.</span>
+          </div>
+        </div>
+
+        <!-- Intro copy -->
+        <div class="intro-copy">
+          <p class="eyebrow">About</p>
+          <h1 class="serif intro-name">Guilherme de Mello</h1>
+          <p class="intro-lead">
+            Senior iOS Engineer based in Dublin. I've been building native Swift apps for 6+ years —
+            across Swift, SwiftUI, and Swift Concurrency — and shipping production AI using the Claude API.
+            My focus is on apps that are fast, crash-free, and feel right at home on Apple platforms.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </Reveal>
+
+  <!-- ── The Journey ────────────────────────────────────────────── -->
+  <Reveal as="section" class="section about-timeline">
+    <div class="container">
+      <p class="eyebrow">The journey</p>
+      <Timeline items={timelineItems} />
+    </div>
+  </Reveal>
+
+  <!-- ── Speaking & Community ──────────────────────────────────── -->
+  <Reveal as="section" class="section about-speaking">
+    <div class="container">
+      <p class="eyebrow">Speaking &amp; community</p>
+      <SpeakingList items={speakingItems} />
+    </div>
+  </Reveal>
+
+  <!-- ── Highlight Chips ───────────────────────────────────────── -->
+  <Reveal as="section" class="section about-chips">
+    <div class="container">
+      <ul class="chips-row" aria-label="Credentials and highlights">
+        {chips.map((chip) => (
+          <li class="chip mono">{chip}</li>
+        ))}
+      </ul>
+    </div>
+  </Reveal>
+</BaseLayout>
+
+<style>
+  /* ── Intro grid ──────────────────────────────────────────────── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  /* Monogram visual */
+  .intro-visual {
+    flex-shrink: 0;
+  }
+
+  .monogram-block {
+    width: clamp(100px, 14vw, 160px);
+    height: clamp(100px, 14vw, 160px);
+    border-radius: var(--r-frame);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(2rem, 4vw, 3rem);
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle orange glow behind the monogram */
+  .monogram-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 60% 40%, rgba(240, 81, 56, 0.12) 0%, transparent 70%);
+  }
+
+  .monogram-text {
+    color: var(--text);
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .monogram-dot {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Intro copy */
+  .intro-copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .intro-name {
+    font-size: var(--fs-h2);
+    line-height: 1.1;
+    margin-top: var(--sp-2);
+  }
+
+  .intro-lead {
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    max-width: 52ch;
+    line-height: 1.65;
+  }
+
+  /* ── Timeline section ────────────────────────────────────────── */
+  .about-timeline .eyebrow {
+    margin-bottom: 0;
+  }
+
+  /* ── Speaking section ────────────────────────────────────────── */
+  .about-speaking .eyebrow {
+    margin-bottom: 0;
+  }
+
+  /* ── Chips row ───────────────────────────────────────────────── */
+  .chips-row {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--sp-2) var(--sp-4);
+    border-radius: var(--r-pill);
+    border: 1px solid var(--border);
+    font-size: var(--fs-mono-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface);
+    white-space: nowrap;
+  }
+
+  /* ── Responsive ──────────────────────────────────────────────── */
+  @media (max-width: 760px) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .intro-visual {
+      align-self: start;
+    }
+
+    .monogram-block {
+      width: 80px;
+      height: 80px;
+      font-size: 1.5rem;
+    }
+
+    .intro-name {
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+    }
+  }
+</style>
