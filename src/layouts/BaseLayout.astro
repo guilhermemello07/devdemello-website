@@ -48,6 +48,9 @@ const {
       document.documentElement.dataset.theme = t;
     </script>
 
+    <!-- Progressive enhancement: mark JS available so reveal elements can hide -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
     <!-- Google Fonts: preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

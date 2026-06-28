@@ -223,14 +223,21 @@ pre {
 /* --------------------------------------------------------------------------
    Scroll reveal
    -------------------------------------------------------------------------- */
+/* Default (no JS): reveal content is fully visible — progressive enhancement */
 .reveal {
+  opacity: 1;
+  transform: none;
+}
+
+/* Only hide + animate when JS is available to reveal it */
+html.js .reveal {
   opacity: 0;
   transform: translateY(40px);
   transition: opacity var(--dur-reveal) var(--ease-out),
               transform var(--dur-reveal) var(--ease-out);
 }
 
-.reveal.visible {
+html.js .reveal.visible {
   opacity: 1;
   transform: none;
 }
@@ -248,9 +255,9 @@ pre {
     scroll-behavior: auto !important;
   }
 
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
+  html.js .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
