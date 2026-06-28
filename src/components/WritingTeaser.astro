@@ -1,40 +1,20 @@
 ---
 // WritingTeaser.astro
-// Shows up to 3 latest blog posts. Links to /blog.
-// TODO Task 8: replace stub posts with getCollection('blog') sorted by pubDate desc
+// Shows up to 3 latest non-draft blog posts, sorted by pubDate desc.
+// Links to /blog/<id> (Content Layer API — id matches the filename without extension).
+import { getCollection } from 'astro:content';
 
-interface Post {
-  title: string;
-  excerpt: string;
-  date: string;
-  slug: string;
-}
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
 
-// TODO Task 8: replace this stub array with getCollection('blog') sorted by pubDate desc
-const posts: Post[] = [
-  {
-    title: 'Building AI-Powered Features with Foundation Models in SwiftUI',
-    excerpt: 'How to integrate on-device Foundation Models into a production SwiftUI app without sacrificing architecture.',
-    date: '2026-06-15',
-    slug: 'foundation-models-swiftui',
-  },
-  {
-    title: 'Clean Architecture in Swift: A Practical 2026 Guide',
-    excerpt: 'Protocols, dependency injection, and testable modules — the structure I reach for on every new project.',
-    date: '2026-05-28',
-    slug: 'clean-architecture-swift-2026',
-  },
-  {
-    title: 'What WWDC25 Means for Senior iOS Engineers',
-    excerpt: 'My notes from Apple Park: the APIs I am most excited about and the patterns I am rethinking.',
-    date: '2026-05-12',
-    slug: 'wwdc25-senior-ios-engineer',
-  },
-];
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-IE', { day: 'numeric', month: 'short', year: 'numeric' });
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-IE', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
 }
 ---
 
@@ -43,19 +23,19 @@ function formatDate(iso: string): string {
     {posts.map((post) => (
       <li class="writing-row">
         <a
-          href={`/blog/${post.slug}`}
+          href={`/blog/${post.id}`}
           class="writing-link"
-          aria-label={`Read: ${post.title}`}
+          aria-label={`Read: ${post.data.title}`}
         >
           <div class="writing-main">
-            <strong class="writing-title">{post.title}</strong>
-            <p class="writing-excerpt muted">{post.excerpt}</p>
+            <strong class="writing-title">{post.data.title}</strong>
+            <p class="writing-excerpt muted">{post.data.description}</p>
           </div>
           <time
             class="writing-date mono"
-            datetime={post.date}
+            datetime={post.data.pubDate.toISOString().slice(0, 10)}
           >
-            {formatDate(post.date)}
+            {formatDate(post.data.pubDate)}
           </time>
         </a>
       </li>
