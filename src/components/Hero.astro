@@ -1,0 +1,653 @@
+---
+/**
+ * Hero.astro — Signature sticky-pin scrub hero.
+ *
+ * Scroll technique: CSS scroll-driven animations using `animation-timeline: scroll(root)`
+ * anchored with `animation-range` percentages that map over the full document scroll.
+ * Because the hero-track is ~200vh and pinned, the scroll ranges 2%→50% (code out)
+ * and 38%→72% (phone in) map to progress within the hero pin on typical pages.
+ *
+ * If `animation-timeline: scroll()` is unavailable (@supports fallback), the code card
+ * is hidden and the phone is shown statically (formed app state).
+ *
+ * Mobile (≤760px): disables the 200vh pin; a one-shot IntersectionObserver class
+ * `.morph-triggered` triggers a CSS keyframe morph when the hero enters view.
+ *
+ * Scrub driver: native CSS `animation-timeline: scroll(root)` (preferred).
+ * See hero-scrub comments in <style> for the view-timeline alternative if needed.
+ */
+---
+
+<section class="hero-track" aria-label="Hero — Guilherme de Mello, Senior iOS Engineer">
+  <div class="hero-pin">
+    <div class="container hero-inner">
+
+      <!-- LEFT: Text column -->
+      <div class="hero-text">
+        <p class="eyebrow hero-eyebrow">Senior iOS Engineer · Dublin</p>
+
+        <h1 class="serif hero-headline">
+          I build native iOS apps<br />
+          that feel <em class="hero-accent">inevitable.</em>
+        </h1>
+
+        <p class="hero-lead">
+          SwiftUI, clean architecture, and a relentless focus on craft —
+          from first commit to App Store.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="/#work" class="btn btn-solid">See my work</a>
+          <a href="/blog" class="btn btn-ghost">Read the blog</a>
+        </div>
+
+        <!-- Scroll hint — animated chevron -->
+        <div class="hero-scroll-hint" aria-hidden="true">
+          <span class="mono hero-scroll-hint-label">scroll</span>
+          <svg class="hero-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- RIGHT: Stage holding code card + phone -->
+      <div class="hero-stage" aria-hidden="true">
+
+        <!-- Code card (scrubs OUT as you scroll) -->
+        <div class="hero-codecard">
+          <div class="hero-codebar">
+            <i class="hero-dot hero-dot--red"></i>
+            <i class="hero-dot hero-dot--yellow"></i>
+            <i class="hero-dot hero-dot--green"></i>
+            <span class="hero-filename">FoodScore.swift</span>
+          </div>
+          <div class="hero-code">
+            <span class="syn-kw">struct</span> <span class="syn-ty">FoodScore</span>: <span class="syn-ty">View</span> &#123;<br />
+            &nbsp;&nbsp;<span class="syn-kw">let</span> score = <span class="syn-nm">87</span><span class="syn-cm">&nbsp;// &#8594; ring number</span><br />
+            &nbsp;&nbsp;<span class="syn-kw">var</span> body: <span class="syn-kw">some</span> <span class="syn-ty">View</span> &#123;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">Circle</span>().<span class="syn-fn">trim</span>(to: <span class="syn-nm">0.87</span>)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="syn-fn">stroke</span>(.<span class="syn-nm">orange</span>, lineWidth: <span class="syn-nm">12</span>)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">Text</span>(<span class="syn-st">&#34;\(</span>score<span class="syn-st">)&#34;</span>).<span class="syn-fn">font</span>(.<span class="syn-nm">largeTitle</span>)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">ForEach</span>(nutrients, <span class="syn-ty">NutrientBar</span>.<span class="syn-kw">init</span>)<span class="hero-caret"></span><br />
+            &nbsp;&nbsp;&#125;<br />
+            &#125;
+          </div>
+        </div>
+
+        <!-- Phone / app (scrubs IN as you scroll) -->
+        <div class="hero-phonewrap">
+          <div class="hero-glow"></div>
+          <!-- hero-phone-tilt: receives rotateX/Y from hero-tilt.ts -->
+          <!-- hero-phone: receives the time-based devicePulse scale -->
+          <div class="hero-phone-tilt">
+          <div class="hero-phone">
+            <div class="hero-pscreen">
+              <div class="hero-notch"></div>
+              <div class="hero-ptitle">Health Score</div>
+              <div class="hero-ring"></div>
+              <div class="hero-nut hero-nut--1">
+                <span class="hero-nut-label">Sugars</span>
+                <div class="hero-nut-track">
+                  <div class="hero-nut-fill" style="width:30%"></div>
+                </div>
+              </div>
+              <div class="hero-nut hero-nut--2">
+                <span class="hero-nut-label">Additives</span>
+                <div class="hero-nut-track">
+                  <div class="hero-nut-fill" style="width:12%"></div>
+                </div>
+              </div>
+              <div class="hero-nut hero-nut--3">
+                <span class="hero-nut-label">Protein</span>
+                <div class="hero-nut-track">
+                  <div class="hero-nut-fill" style="width:72%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div><!-- /hero-phone-tilt -->
+        </div>
+
+      </div><!-- /hero-stage -->
+    </div><!-- /hero-inner -->
+  </div><!-- /hero-pin -->
+</section><!-- /hero-track -->
+
+<!-- hero-tilt: pointer-driven 3D tilt on the phone; disabled on touch + reduced-motion -->
+<script>
+  import '../scripts/hero-tilt.ts';
+</script>
+
+<!-- Mobile one-shot morph: IntersectionObserver adds .morph-triggered to hero-pin -->
+<script>
+  (function () {
+    const pin = document.querySelector('.hero-pin');
+    if (!pin) return;
+    // Only enable on narrow viewports — CSS media query already hides the track height
+    if (!matchMedia('(max-width: 760px)').matches) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            pin.classList.add('morph-triggered');
+            obs.disconnect(); // one-shot
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+    obs.observe(pin);
+  })();
+</script>
+
+<style>
+  /* ==========================================================================
+     Hero Track — creates the scroll distance for the sticky pin.
+     On mobile (≤760px) we collapse to normal height and use IntersectionObserver.
+     ========================================================================== */
+
+  .hero-track {
+    position: relative;
+    height: 200vh; /* scroll distance: pin stays until 200vh consumed */
+  }
+
+  /* --------------------------------------------------------------------------
+     Hero Pin — sticky container, always viewport-height
+     -------------------------------------------------------------------------- */
+  .hero-pin {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* --------------------------------------------------------------------------
+     Inner grid: text left / stage right
+     -------------------------------------------------------------------------- */
+  .hero-inner {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 6vw, 4rem);
+    align-items: center;
+    padding-block: clamp(4rem, 10vh, 7rem);
+  }
+
+  /* --------------------------------------------------------------------------
+     Left column: text
+     -------------------------------------------------------------------------- */
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+  }
+
+  .hero-eyebrow {
+    /* .eyebrow utility used; no override needed */
+  }
+
+  .hero-headline {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    line-height: 1.03;
+    letter-spacing: -0.02em;
+    /* override global h1 font-weight */
+  }
+
+  .hero-accent {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-lead {
+    color: var(--text-muted);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    max-width: 38ch;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    align-items: center;
+  }
+
+  /* Scroll hint — bouncing chevron */
+  .hero-scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    color: var(--text-dim);
+    font-size: var(--fs-mono-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: var(--sp-2);
+    animation: scrollHintBounce 2s var(--ease-out) infinite;
+  }
+
+  .hero-scroll-hint-label {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .hero-chevron {
+    flex-shrink: 0;
+  }
+
+  @keyframes scrollHintBounce {
+    0%, 100% { transform: translateY(0); opacity: 0.5; }
+    50%       { transform: translateY(4px); opacity: 1; }
+  }
+
+  /* ==========================================================================
+     Right column: Stage holding code card + phone
+     ========================================================================== */
+
+  .hero-stage {
+    position: relative;
+    height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 3D context for tilt */
+    perspective: 800px;
+    perspective-origin: center center;
+  }
+
+  /* ==========================================================================
+     Code Card — fades + scales + blurs OUT as scroll progresses 2%→50%
+     Uses scroll(root) so the range maps over the full document scroll.
+     ========================================================================== */
+
+  .hero-codecard {
+    position: absolute;
+    width: min(300px, 90%);
+    background: #161618;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+
+    /* Scroll-driven: scroll(root) maps to the root (page) scroll */
+    animation: heroCodeOut linear both;
+    animation-timeline: scroll(root);
+    animation-range: 2% 50%;
+  }
+
+  @keyframes heroCodeOut {
+    to {
+      opacity: 0;
+      transform: scale(0.88) translateY(-6px);
+      filter: blur(3px);
+    }
+  }
+
+  /* Window chrome bar */
+  .hero-codebar {
+    height: 26px;
+    background: #202023;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: #8a8a8e;
+  }
+
+  .hero-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
+    flex-shrink: 0;
+  }
+  .hero-dot--red    { background: #ff5f57; }
+  .hero-dot--yellow { background: #febc2e; }
+  .hero-dot--green  { background: #28c840; }
+
+  .hero-filename {
+    margin-left: 8px;
+  }
+
+  /* Code body */
+  .hero-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    line-height: 1.65;
+    padding: 12px 14px;
+    color: #e0e0e4;
+  }
+
+  /* Syntax highlight classes — use design-token values */
+  .syn-kw { color: var(--syntax-keyword);  } /* #FF7AB2 */
+  .syn-ty { color: var(--syntax-type);     } /* #5DD8FF */
+  .syn-st { color: var(--syntax-string);   } /* #FF8170 */
+  .syn-fn { color: var(--syntax-function); } /* #82D2CE */
+  .syn-nm { color: var(--syntax-number);   } /* #D9C97E */
+  .syn-cm { color: var(--syntax-comment);  } /* #6C6C70 */
+
+  /* Blinking caret */
+  .hero-caret {
+    display: inline-block;
+    width: 7px;
+    height: 12px;
+    background: var(--accent);
+    vertical-align: -2px;
+    animation: heroCaret 1s steps(1) infinite;
+  }
+  @keyframes heroCaret {
+    50% { opacity: 0; }
+  }
+
+  /* ==========================================================================
+     Phone wrap — fades + scales IN as scroll progresses 38%→72%
+     ========================================================================== */
+
+  .hero-phonewrap {
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.8) translateY(14px);
+    transform-style: preserve-3d;
+
+    /* Scroll-driven: phone IN */
+    animation: heroPhoneIn linear both;
+    animation-timeline: scroll(root);
+    animation-range: 38% 72%;
+  }
+
+  @keyframes heroPhoneIn {
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+     Glow — time-based pulse (independent of scroll)
+     -------------------------------------------------------------------------- */
+  .hero-glow {
+    position: absolute;
+    inset: -46px;
+    background: radial-gradient(circle, rgba(240, 81, 56, 0.30), transparent 60%);
+    filter: blur(22px);
+    animation: heroGlowPulse 3.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes heroGlowPulse {
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    50%       { opacity: 1;    transform: scale(1.08); }
+  }
+
+  /* --------------------------------------------------------------------------
+     Phone tilt wrapper — receives rotateX/Y from hero-tilt.ts.
+     Separated from .hero-phone so JS transform doesn't fight the CSS pulse.
+     -------------------------------------------------------------------------- */
+  .hero-phone-tilt {
+    transform-style: preserve-3d;
+    transition: transform 0.15s var(--ease-out);
+  }
+
+  /* --------------------------------------------------------------------------
+     Phone device — time-based subtle scale pulse (independent of scroll)
+     -------------------------------------------------------------------------- */
+  .hero-phone {
+    position: relative;
+    width: 140px;
+    height: 280px;
+    border-radius: 30px;
+    background: linear-gradient(160deg, #1c1c1e, #0e0e10);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    padding: 9px;
+    animation: heroDevicePulse 3.2s ease-in-out infinite;
+  }
+
+  @keyframes heroDevicePulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.025); }
+  }
+
+  /* Phone screen */
+  .hero-pscreen {
+    width: 100%;
+    height: 100%;
+    border-radius: 23px;
+    background: radial-gradient(120% 80% at 50% 0%, #2a1410, #0d0d0f);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Notch */
+  .hero-notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 42px;
+    height: 11px;
+    border-radius: 99px;
+    background: #000;
+  }
+
+  /* App title */
+  .hero-ptitle {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #8a8a8e;
+  }
+
+  /* Score ring: conic-gradient maps 87% arc → score 87 */
+  .hero-ring {
+    position: absolute;
+    top: 54px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) 0 87%, #2c2c2e 87% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: heroRingPulse 3.2s ease-in-out infinite;
+  }
+
+  /* Inner circle with "87" — matches `let score = 87` + `Text("\(score)")` */
+  .hero-ring::after {
+    content: '87';
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: #0d0d0f;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @keyframes heroRingPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50%       { transform: translateX(-50%) scale(1.04); }
+  }
+
+  /* Nutrient bars — ForEach(nutrients, NutrientBar.init) */
+  .hero-nut {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    color: #c7c7cc;
+  }
+
+  .hero-nut-label {
+    width: 54px;
+    flex-shrink: 0;
+  }
+
+  .hero-nut-track {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #1c1c1e;
+    overflow: hidden;
+  }
+
+  .hero-nut-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--accent);
+  }
+
+  /* Positions match the three rows: Sugars, Additives, Protein */
+  .hero-nut--1 { top: 172px; }
+  .hero-nut--2 { top: 194px; }
+  .hero-nut--3 { top: 216px; }
+
+  /* ==========================================================================
+     MOBILE (≤760px) — Collapse 200vh pin; one-shot IntersectionObserver morph
+     ========================================================================== */
+
+  @media (max-width: 760px) {
+    /* Collapse the sticky track to normal height */
+    .hero-track {
+      height: auto;
+    }
+
+    .hero-pin {
+      position: relative;
+      min-height: auto;
+    }
+
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: var(--sp-6);
+      padding-block: clamp(5rem, 12vw, 8rem);
+    }
+
+    .hero-stage {
+      /* Taller stage on mobile so phone/code don't overlap */
+      height: 300px;
+      margin-inline: auto;
+      max-width: 340px;
+      width: 100%;
+    }
+
+    .hero-lead {
+      max-width: 100%;
+    }
+
+    /* On mobile: override scroll-driven animation — start with code shown */
+    .hero-codecard {
+      animation: none;
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
+    .hero-phonewrap {
+      animation: none;
+      opacity: 0;
+      transform: scale(0.85) translateY(12px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+
+    /* One-shot morph: JS adds .morph-triggered when hero enters view */
+    .hero-pin.morph-triggered .hero-codecard {
+      animation: heroMobileCodeOut 0.6s var(--ease-out) 0.2s both;
+    }
+
+    .hero-pin.morph-triggered .hero-phonewrap {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      transition-delay: 0.55s;
+    }
+
+    @keyframes heroMobileCodeOut {
+      to {
+        opacity: 0;
+        transform: scale(0.88) translateY(-6px);
+        filter: blur(3px);
+      }
+    }
+
+    /* Disable scroll hint on mobile */
+    .hero-scroll-hint {
+      display: none;
+    }
+  }
+
+  /* ==========================================================================
+     FALLBACK: browsers without scroll-driven animation support
+     Show formed app (phone visible, code hidden)
+     ========================================================================== */
+
+  @supports not (animation-timeline: scroll()) {
+    .hero-codecard {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hero-phonewrap {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      /* Keep time-based pulses active */
+    }
+  }
+
+  /* ==========================================================================
+     REDUCED MOTION — skip straight to pulsing formed app; stop all motion
+     ========================================================================== */
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Override the global reset for scroll-hint (it kills animation anyway) */
+    .hero-scroll-hint {
+      display: none;
+    }
+
+    /* Code hidden, phone visible — "formed app" static state */
+    .hero-codecard {
+      animation: none !important;
+      opacity: 0;
+      transform: none;
+      filter: none;
+      pointer-events: none;
+    }
+
+    .hero-phonewrap {
+      animation: none !important;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Stop all time-based pulses */
+    .hero-glow,
+    .hero-phone,
+    .hero-ring {
+      animation: none !important;
+    }
+
+    /* Stop caret blink */
+    .hero-caret {
+      animation: none !important;
+    }
+  }
+</style>
