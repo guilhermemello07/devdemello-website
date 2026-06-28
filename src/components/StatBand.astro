@@ -1,0 +1,100 @@
+---
+// StatBand.astro
+// 4-stat responsive grid. Values in serif, large; captions mono/muted.
+
+interface Stat {
+  value: string;
+  caption: string;
+  accentPart?: string; // substring of value to highlight in --accent
+}
+
+interface Props {
+  stats?: Stat[];
+}
+
+const defaultStats: Stat[] = [
+  { value: '6+',      caption: 'years shipping iOS',    accentPart: '+' },
+  { value: '99%+',    caption: 'crash-free rate',       accentPart: '+' },
+  { value: 'WWDC25',  caption: 'invited, Apple Park',   accentPart: '25' },
+  { value: 'iOSDevUK',caption: 'speaker, Sept 2026' },
+];
+
+const { stats = defaultStats } = Astro.props;
+
+// Split value into [before, accent, after] parts for accentPart rendering
+function splitValue(value: string, accentPart?: string) {
+  if (!accentPart) return { before: value, accent: '', after: '' };
+  const idx = value.lastIndexOf(accentPart);
+  if (idx === -1) return { before: value, accent: '', after: '' };
+  return {
+    before: value.slice(0, idx),
+    accent: accentPart,
+    after: value.slice(idx + accentPart.length),
+  };
+}
+---
+
+<div class="stat-band" role="list" aria-label="Key statistics">
+  {stats.map((stat) => {
+    const { before, accent, after } = splitValue(stat.value, stat.accentPart);
+    return (
+      <div class="stat-item" role="listitem">
+        <p class="stat-value serif" aria-label={stat.value}>
+          {before}
+          {accent && <span class="accent">{accent}</span>}
+          {after}
+        </p>
+        <p class="stat-caption mono">{stat.caption}</p>
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .stat-band {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-5) var(--sp-6);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    text-align: center;
+    padding: var(--sp-5) var(--sp-4);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .stat-value {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .stat-caption {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: var(--fs-mono-label);
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 760px) {
+    .stat-band {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 420px) {
+    .stat-band {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,143 @@
+---
+// ContactLinks.astro
+// Self-contained contact links block — used on homepage and reused on /contact page.
+// External links open in new tab. Download CV uses download attribute, NOT new tab.
+// TODO: replace # placeholders for LinkedIn and GemTechLabs once real URLs are available.
+---
+
+<div class="contact-links">
+
+  <!-- Primary CTA: Download CV -->
+  <a
+    href="/cv/GuilhermeMello-CV.pdf"
+    download
+    class="btn btn-solid contact-cv"
+    aria-label="Download Guilherme de Mello's CV as PDF"
+  >
+    Download CV
+  </a>
+
+  <!-- Link rows -->
+  <ul class="contact-list" role="list">
+
+    <li class="contact-item">
+      <!-- TODO: replace href with real LinkedIn URL -->
+      <a
+        href="#"
+        class="contact-link"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Connect with Guilherme de Mello on LinkedIn (opens in new tab)"
+      >
+        <span class="contact-label">LinkedIn</span>
+        <span class="contact-arrow accent" aria-hidden="true">→</span>
+      </a>
+    </li>
+
+    <li class="contact-item">
+      <a
+        href="https://github.com/guilhermemello07"
+        class="contact-link"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="View Guilherme de Mello's GitHub profile (opens in new tab)"
+      >
+        <span class="contact-label">GitHub</span>
+        <span class="contact-arrow accent" aria-hidden="true">→</span>
+      </a>
+    </li>
+
+    <li class="contact-item">
+      <!-- TODO: replace href with real GemTechLabs AI URL -->
+      <a
+        href="#"
+        class="contact-link"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Visit GemTechLabs AI website (opens in new tab)"
+      >
+        <span class="contact-label">GemTechLabs AI</span>
+        <span class="contact-arrow accent" aria-hidden="true">→</span>
+      </a>
+    </li>
+
+  </ul>
+</div>
+
+<style>
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    max-width: 480px;
+  }
+
+  .contact-cv {
+    align-self: flex-start;
+  }
+
+  .contact-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    padding: var(--sp-4) 0;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      color var(--dur-hover) var(--ease-out),
+      padding-left var(--dur-hover) var(--ease-out);
+  }
+
+  .contact-link:hover {
+    color: var(--text);
+    padding-left: var(--sp-3);
+  }
+
+  .contact-link:hover .contact-label {
+    color: var(--text);
+  }
+
+  .contact-label {
+    font-size: var(--fs-body);
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+
+  .contact-arrow {
+    font-size: 1.1rem;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+    transition: transform var(--dur-hover) var(--ease-out);
+  }
+
+  .contact-link:hover .contact-arrow {
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-link {
+      transition: none;
+    }
+
+    .contact-link:hover {
+      padding-left: 0;
+    }
+
+    .contact-link:hover .contact-arrow {
+      transform: none;
+    }
+  }
+</style>

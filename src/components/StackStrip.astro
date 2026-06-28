@@ -1,0 +1,75 @@
+---
+// StackStrip.astro
+// Horizontal mono strip of tech keywords.
+// "Swift" and "Claude API" render in accent colour.
+
+interface Props {
+  items?: { label: string; accent?: boolean }[];
+}
+
+const defaultItems: { label: string; accent?: boolean }[] = [
+  { label: 'Swift', accent: true },
+  { label: 'SwiftUI' },
+  { label: 'Swift Concurrency' },
+  { label: 'Combine' },
+  { label: 'Clean Architecture' },
+  { label: 'Claude API', accent: true },
+  { label: 'Foundation Models' },
+  { label: 'CI/CD' },
+];
+
+const { items = defaultItems } = Astro.props;
+---
+
+<div class="stack-strip" role="list" aria-label="Technology stack">
+  {items.map((item, i) => (
+    <>
+      <span
+        class={`stack-item mono${item.accent ? ' stack-item--accent' : ''}`}
+        role="listitem"
+      >
+        {item.label}
+      </span>
+      {i < items.length - 1 && (
+        <span class="stack-sep" aria-hidden="true">/</span>
+      )}
+    </>
+  ))}
+</div>
+
+<style>
+  .stack-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-3);
+    row-gap: var(--sp-3);
+  }
+
+  .stack-item {
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+
+  .stack-item--accent {
+    color: var(--accent);
+  }
+
+  .stack-sep {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: var(--fs-mono-label);
+    color: var(--border);
+    user-select: none;
+    line-height: 1;
+  }
+
+  @media (max-width: 760px) {
+    .stack-strip {
+      gap: var(--sp-2) var(--sp-3);
+    }
+  }
+</style>

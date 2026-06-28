@@ -2,7 +2,8 @@
 interface Props {
   as?: keyof HTMLElementTagNameMap;
   class?: string;
+  id?: string;
 }
-const { as: Tag = 'div', class: className = '' } = Astro.props;
+const { as: Tag = 'div', class: className = '', id } = Astro.props;
 ---
-<Tag class={`reveal ${className}`}><slot /></Tag>
+<Tag id={id} class={`reveal ${className}`}><slot /></Tag>
