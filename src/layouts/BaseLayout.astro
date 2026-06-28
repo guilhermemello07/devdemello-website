@@ -1,0 +1,68 @@
+---
+// BaseLayout.astro
+// The structural shell for every page: <head> with fonts, meta, theme script,
+// sticky Nav, main slot, and Footer.
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import '../styles/syntax.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Guilherme de Mello — Senior iOS Engineer',
+  description = 'Senior iOS Engineer based in Dublin. Crafting native Swift apps that feel inevitable — from architecture to App Store.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary meta -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Theme color (matches dark bg; browsers use this for UI chrome) -->
+    <meta name="theme-color" content="#0B0B0C" />
+
+    <!-- Open Graph placeholders -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <!-- TODO: add og:url, og:image once deployed -->
+
+    <!-- No-FOUC theme script: runs before paint to set data-theme -->
+    <script is:inline>
+      const t = localStorage.getItem('theme')
+        || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    </script>
+
+    <!-- Google Fonts: preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Google Fonts: Instrument Serif, Inter, JetBrains Mono in one request -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <Nav />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

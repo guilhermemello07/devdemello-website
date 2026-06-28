@@ -1,0 +1,145 @@
+---
+// Footer.astro
+// GM. monogram, tagline, social links, copyright.
+---
+
+<footer class="footer" role="contentinfo">
+  <div class="container footer-inner">
+    <!-- Left: monogram + tagline -->
+    <div class="footer-brand">
+      <a href="/" class="footer-logo" aria-label="Guilherme de Mello — Home">
+        GM<span class="accent" aria-hidden="true">.</span>
+      </a>
+      <p class="footer-tagline muted">Building native iOS apps that feel inevitable.</p>
+    </div>
+
+    <!-- Right: social links -->
+    <nav class="footer-links" aria-label="Social links">
+      <!-- TODO: replace # with real LinkedIn URL (e.g. https://linkedin.com/in/guilherme-demello) -->
+      <a
+        href="#"
+        class="footer-link"
+        aria-label="Guilherme de Mello on LinkedIn"
+        rel="noopener noreferrer"
+        target="_blank"
+      >LinkedIn</a>
+
+      <!-- TODO: replace # with real GitHub URL (e.g. https://github.com/guilhermemello07) -->
+      <a
+        href="#"
+        class="footer-link"
+        aria-label="Guilherme de Mello on GitHub"
+        rel="noopener noreferrer"
+        target="_blank"
+      >GitHub</a>
+
+      <!-- TODO: replace # with GemTechLabs AI site URL -->
+      <a
+        href="#"
+        class="footer-link"
+        aria-label="GemTechLabs AI — Guilherme's company"
+        rel="noopener noreferrer"
+        target="_blank"
+      >GemTechLabs</a>
+    </nav>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="container footer-bottom">
+    <small class="footer-copy" style="color: var(--text-dim)">
+      &copy; 2026 Guilherme de Mello. All rights reserved.
+    </small>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-block: var(--sp-7) var(--sp-5);
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-6);
+    flex-wrap: wrap;
+  }
+
+  /* Brand / monogram */
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+
+  .footer-logo {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-decoration: none;
+    transition: opacity var(--dur-hover) var(--ease-out);
+  }
+
+  .footer-logo:hover {
+    opacity: 0.7;
+  }
+
+  .footer-tagline {
+    font-size: var(--fs-small);
+    max-width: 28ch;
+    line-height: 1.5;
+  }
+
+  /* Nav links */
+  .footer-links {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    flex-wrap: wrap;
+  }
+
+  .footer-link {
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+
+  .footer-link:hover {
+    color: var(--accent);
+  }
+
+  /* Bottom copyright bar */
+  .footer-bottom {
+    margin-top: var(--sp-6);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-copy {
+    display: block;
+  }
+
+  /* Responsive */
+  @media (max-width: 560px) {
+    .footer-inner {
+      flex-direction: column;
+      gap: var(--sp-5);
+    }
+
+    .footer-links {
+      gap: var(--sp-4);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer-logo,
+    .footer-link {
+      transition: none;
+    }
+  }
+</style>
