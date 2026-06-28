@@ -1,0 +1,68 @@
+/* ==========================================================================
+   Syntax Highlighting
+   Six syntax color variables + Shiki block blending with --surface.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Syntax color tokens
+   -------------------------------------------------------------------------- */
+:root {
+  --syntax-keyword: #FF7AB2;
+  --syntax-type: #5DD8FF;
+  --syntax-string: #FF8170;
+  --syntax-function: #82D2CE;
+  --syntax-number: #D9C97E;
+  --syntax-comment: #6C6C70;
+}
+
+/* --------------------------------------------------------------------------
+   Shiki code block blending with --surface
+   -------------------------------------------------------------------------- */
+
+/* Outer container */
+pre.astro-code,
+pre[class*="language-"],
+.shiki {
+  background: var(--surface) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: var(--sp-5);
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: var(--fs-small);
+  line-height: 1.7;
+}
+
+/* Override Shiki's inline background colors so the block blends */
+.shiki span,
+pre.astro-code span {
+  background: transparent !important;
+}
+
+/* Scrollbar styling for code blocks */
+pre.astro-code::-webkit-scrollbar,
+.shiki::-webkit-scrollbar {
+  height: 6px;
+}
+
+pre.astro-code::-webkit-scrollbar-track,
+.shiki::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+pre.astro-code::-webkit-scrollbar-thumb,
+.shiki::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--r-pill);
+}
+
+/* Inline code (not inside a pre) */
+:not(pre) > code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.875em;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--syntax-string);
+}
