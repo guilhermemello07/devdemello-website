@@ -92,6 +92,24 @@
     transform: translateY(0);
   }
 
+  /* Icon visibility driven by [data-theme] on <html> (set pre-paint by the
+     no-FOUC inline script) so exactly one icon shows before JS hydrates.
+     Sun = shown in dark mode (click → switch to light);
+     Moon = shown in light mode (click → switch to dark).
+     :global() escapes Astro's component scoping for the html-level selector. */
+  .icon-sun,
+  .icon-moon {
+    display: none;
+  }
+
+  :global(html[data-theme='dark']) .icon-sun {
+    display: block;
+  }
+
+  :global(html[data-theme='light']) .icon-moon {
+    display: block;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .theme-toggle {
       transition: none;

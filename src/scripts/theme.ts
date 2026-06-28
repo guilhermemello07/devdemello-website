@@ -7,32 +7,26 @@
  */
 
 export function initThemeToggle(button: HTMLButtonElement): void {
-  const sunIcon = button.querySelector<SVGElement>('.icon-sun');
-  const moonIcon = button.querySelector<SVGElement>('.icon-moon');
-
   function getTheme(): 'light' | 'dark' {
     return (document.documentElement.dataset.theme as 'light' | 'dark') ?? 'light';
   }
 
-  function updateIcons(theme: 'light' | 'dark'): void {
-    if (sunIcon && moonIcon) {
-      sunIcon.style.display = theme === 'dark' ? 'block' : 'none';
-      moonIcon.style.display = theme === 'light' ? 'block' : 'none';
-    }
+  // Icon visibility is driven by CSS keyed off [data-theme] (set pre-paint by
+  // the no-FOUC inline script), so JS only updates the accessible label.
+  function updateLabel(theme: 'light' | 'dark'): void {
     button.setAttribute(
       'aria-label',
       theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
     );
   }
 
-  // Set initial icon state
-  updateIcons(getTheme());
+  // Sync label to the theme the inline script already applied.
+  updateLabel(getTheme());
 
   button.addEventListener('click', () => {
-    const current = getTheme();
-    const next = current === 'dark' ? 'light' : 'dark';
+    const next = getTheme() === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
     localStorage.setItem('theme', next);
-    updateIcons(next);
+    updateLabel(next);
   });
 }
