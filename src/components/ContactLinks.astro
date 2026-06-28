@@ -1,8 +1,15 @@
 ---
 // ContactLinks.astro
 // Self-contained contact links block — used on homepage and reused on /contact page.
-// External links open in new tab. Download CV uses download attribute, NOT new tab.
+// Real external links open in a new tab; placeholder (#) links do not get target/rel
+// (those attributes are inert/misleading on a fragment href).
 // TODO: replace # placeholders for LinkedIn and GemTechLabs once real URLs are available.
+const links = [
+  { label: 'LinkedIn', href: '#', aria: 'Connect with Guilherme de Mello on LinkedIn' },
+  { label: 'GitHub', href: 'https://github.com/guilhermemello07', aria: "View Guilherme de Mello's GitHub profile" },
+  { label: 'GemTechLabs AI', href: '#', aria: 'Visit GemTechLabs AI website' },
+];
+const isExternal = (href: string) => href.startsWith('http');
 ---
 
 <div class="contact-links">
@@ -19,48 +26,20 @@
 
   <!-- Link rows -->
   <ul class="contact-list" role="list">
-
-    <li class="contact-item">
-      <!-- TODO: replace href with real LinkedIn URL -->
-      <a
-        href="#"
-        class="contact-link"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Connect with Guilherme de Mello on LinkedIn (opens in new tab)"
-      >
-        <span class="contact-label">LinkedIn</span>
-        <span class="contact-arrow accent" aria-hidden="true">→</span>
-      </a>
-    </li>
-
-    <li class="contact-item">
-      <a
-        href="https://github.com/guilhermemello07"
-        class="contact-link"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="View Guilherme de Mello's GitHub profile (opens in new tab)"
-      >
-        <span class="contact-label">GitHub</span>
-        <span class="contact-arrow accent" aria-hidden="true">→</span>
-      </a>
-    </li>
-
-    <li class="contact-item">
-      <!-- TODO: replace href with real GemTechLabs AI URL -->
-      <a
-        href="#"
-        class="contact-link"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Visit GemTechLabs AI website (opens in new tab)"
-      >
-        <span class="contact-label">GemTechLabs AI</span>
-        <span class="contact-arrow accent" aria-hidden="true">→</span>
-      </a>
-    </li>
-
+    {links.map((link) => (
+      <li class="contact-item">
+        <a
+          href={link.href}
+          class="contact-link"
+          target={isExternal(link.href) ? '_blank' : undefined}
+          rel={isExternal(link.href) ? 'noopener noreferrer' : undefined}
+          aria-label={isExternal(link.href) ? `${link.aria} (opens in new tab)` : link.aria}
+        >
+          <span class="contact-label">{link.label}</span>
+          <span class="contact-arrow accent" aria-hidden="true">→</span>
+        </a>
+      </li>
+    ))}
   </ul>
 </div>
 

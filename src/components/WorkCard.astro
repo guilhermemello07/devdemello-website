@@ -30,7 +30,7 @@ const linkProps = href
       ...(href !== '#' && !href.startsWith('/')
         ? { target: '_blank', rel: 'noopener noreferrer' }
         : {}),
-      'aria-label': `${title} — ${blurb}`,
+      'aria-label': blurb ? `${title} — ${blurb}` : title,
     }
   : {};
 ---
