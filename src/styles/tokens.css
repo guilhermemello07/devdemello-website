@@ -10,6 +10,7 @@
   --accent: #F05138;
   --accent-soft: #FF8A5B;
   --accent-ink: #C2371F;
+  --accent-fg: #ffffff; /* foreground for text/icons placed on the accent color */
 }
 
 /* --------------------------------------------------------------------------

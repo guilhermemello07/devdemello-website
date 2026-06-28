@@ -198,7 +198,7 @@ pre {
 
 .btn-solid {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-fg);
   border: 1.5px solid transparent;
 }
 
