@@ -101,6 +101,11 @@ h6 {
 }
 
 p {
+  color: var(--text);
+}
+
+/* Opt-in muted body copy (leads, captions, secondary text) */
+.muted {
   color: var(--text-muted);
 }
 
@@ -212,11 +217,7 @@ pre {
 .btn-ghost:hover {
   background: var(--surface);
   transform: translateY(-2px);
-  border-color: rgba(0, 0, 0, 0.18);
-}
-
-:root[data-theme="dark"] .btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: var(--text-dim);
 }
 
 /* --------------------------------------------------------------------------
