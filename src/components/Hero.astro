@@ -113,6 +113,11 @@
   </div><!-- /hero-pin -->
 </section><!-- /hero-track -->
 
+<!-- hero-scrub: hero-scoped scroll progress var --p (robust to page length) -->
+<script>
+  import '../scripts/hero-scrub.ts';
+</script>
+
 <!-- hero-tilt: pointer-driven 3D tilt on the phone; disabled on touch + reduced-motion -->
 <script>
   import '../scripts/hero-tilt.ts';
@@ -260,8 +265,9 @@
   }
 
   /* ==========================================================================
-     Code Card — fades + scales + blurs OUT as scroll progresses 2%→50%
-     Uses scroll(root) so the range maps over the full document scroll.
+     Code Card — fades + scales + blurs OUT as the hero scrub progresses.
+     Driven by --p (0→1) set by hero-scrub.ts over the hero-track's pinnable
+     distance, so it is independent of total document height.
      ========================================================================== */
 
   .hero-codecard {
@@ -272,19 +278,22 @@
     border-radius: var(--r-card);
     overflow: hidden;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
-
-    /* Scroll-driven: scroll(root) maps to the root (page) scroll */
-    animation: heroCodeOut linear both;
-    animation-timeline: scroll(root);
-    animation-range: 2% 50%;
+    /* No-JS / fallback default: formed app shown, code hidden */
+    opacity: 0;
   }
 
+  /* JS path: paused animation scrubbed by --p via negative animation-delay */
+  html.js .hero-codecard {
+    opacity: 1;
+    animation: heroCodeOut 1s linear both paused;
+    animation-delay: calc(var(--p, 0) * -1s);
+  }
+
+  /* code fully gone by 50% of progress */
   @keyframes heroCodeOut {
-    to {
-      opacity: 0;
-      transform: scale(0.88) translateY(-6px);
-      filter: blur(3px);
-    }
+    0%   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    50%  { opacity: 0; transform: scale(0.88) translateY(-6px); filter: blur(3px); }
+    100% { opacity: 0; transform: scale(0.88) translateY(-6px); filter: blur(3px); }
   }
 
   /* Window chrome bar */
@@ -346,26 +355,31 @@
   }
 
   /* ==========================================================================
-     Phone wrap — fades + scales IN as scroll progresses 38%→72%
+     Phone wrap — fades + scales IN as the hero scrub progresses (38%→72%).
+     Same --p drives it; relative timing is encoded into the keyframes.
      ========================================================================== */
 
   .hero-phonewrap {
     position: absolute;
-    opacity: 0;
-    transform: scale(0.8) translateY(14px);
     transform-style: preserve-3d;
-
-    /* Scroll-driven: phone IN */
-    animation: heroPhoneIn linear both;
-    animation-timeline: scroll(root);
-    animation-range: 38% 72%;
+    /* No-JS / fallback default: formed app shown */
+    opacity: 1;
+    transform: none;
   }
 
+  /* JS path: paused animation scrubbed by --p via negative animation-delay */
+  html.js .hero-phonewrap {
+    opacity: 0;
+    animation: heroPhoneIn 1s linear both paused;
+    animation-delay: calc(var(--p, 0) * -1s);
+  }
+
+  /* phone forms between 38%–72% of progress */
   @keyframes heroPhoneIn {
-    to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
+    0%   { opacity: 0; transform: scale(0.8) translateY(14px); }
+    38%  { opacity: 0; transform: scale(0.8) translateY(14px); }
+    72%  { opacity: 1; transform: scale(1) translateY(0); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
   }
 
   /* --------------------------------------------------------------------------
@@ -555,15 +569,19 @@
       max-width: 100%;
     }
 
-    /* On mobile: override scroll-driven animation — start with code shown */
-    .hero-codecard {
+    /* No-JS mobile default stays the global formed-app fallback
+       (.hero-codecard{opacity:0} / .hero-phonewrap{opacity:1}) — no override here.
+
+       JS mobile: disable the scroll-scrub, show code first, then morph on enter.
+       html.js selectors win specificity over the desktop scrub rules. */
+    html.js .hero-codecard {
       animation: none;
       opacity: 1;
       transform: none;
       filter: none;
     }
 
-    .hero-phonewrap {
+    html.js .hero-phonewrap {
       animation: none;
       opacity: 0;
       transform: scale(0.85) translateY(12px);
@@ -571,11 +589,11 @@
     }
 
     /* One-shot morph: JS adds .morph-triggered when hero enters view */
-    .hero-pin.morph-triggered .hero-codecard {
+    html.js .hero-pin.morph-triggered .hero-codecard {
       animation: heroMobileCodeOut 0.6s var(--ease-out) 0.2s both;
     }
 
-    .hero-pin.morph-triggered .hero-phonewrap {
+    html.js .hero-pin.morph-triggered .hero-phonewrap {
       opacity: 1;
       transform: scale(1) translateY(0);
       transition-delay: 0.55s;
@@ -596,22 +614,13 @@
   }
 
   /* ==========================================================================
-     FALLBACK: browsers without scroll-driven animation support
-     Show formed app (phone visible, code hidden)
+     NO-JS / fallback note:
+     The base (non-html.js) rules already land on the formed app
+     (.hero-codecard{opacity:0} / .hero-phonewrap{opacity:1}). The scrub only
+     activates under html.js with --p driven by hero-scrub.ts, so browsers
+     without JS or without scroll support simply show the formed app — no
+     @supports block needed.
      ========================================================================== */
-
-  @supports not (animation-timeline: scroll()) {
-    .hero-codecard {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .hero-phonewrap {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-      /* Keep time-based pulses active */
-    }
-  }
 
   /* ==========================================================================
      REDUCED MOTION — skip straight to pulsing formed app; stop all motion
@@ -623,19 +632,20 @@
       display: none;
     }
 
-    /* Code hidden, phone visible — "formed app" static state */
+    /* Code hidden, phone visible — "formed app" static state.
+       !important beats the html.js scrub rules regardless of specificity. */
     .hero-codecard {
       animation: none !important;
-      opacity: 0;
-      transform: none;
-      filter: none;
+      opacity: 0 !important;
+      transform: none !important;
+      filter: none !important;
       pointer-events: none;
     }
 
     .hero-phonewrap {
       animation: none !important;
-      opacity: 1;
-      transform: scale(1) translateY(0);
+      opacity: 1 !important;
+      transform: none !important;
     }
 
     /* Stop all time-based pulses */
