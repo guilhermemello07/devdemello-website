@@ -2,6 +2,7 @@
 // index.astro
 // Home page — uses BaseLayout. Sections (Hero, Work, etc.) will be added in later tasks.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Reveal from '../components/Reveal.astro';
 ---
 
 <BaseLayout
@@ -9,15 +10,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Senior iOS Engineer based in Dublin. Crafting native Swift apps that feel inevitable — from architecture to App Store."
 >
   <!-- Placeholder body: real sections (Hero, Work, About, Blog, Contact) added in later tasks -->
-  <div class="container section" style="min-height: 60vh; display: flex; align-items: center;">
-    <div>
-      <p class="eyebrow">Senior iOS Engineer · Dublin</p>
-      <h1 class="serif" style="margin-top: 1rem;">
-        I build native iOS apps<br />that feel <em class="accent">inevitable.</em>
-      </h1>
-      <p class="muted" style="margin-top: 1.5rem; max-width: 48ch; font-size: 1.125rem;">
-        Placeholder — real sections coming in the next tasks.
-      </p>
-    </div>
+  <!-- Demo Reveal blocks (Task 4 verification — Task 6 rebuilds this page fully) -->
+  <div class="container section">
+    <Reveal>
+      <section class="section">
+        <p class="eyebrow">Senior iOS Engineer · Dublin</p>
+        <h1 class="serif" style="margin-top: 1rem;">
+          I build native iOS apps<br />that feel <em class="accent">inevitable.</em>
+        </h1>
+      </section>
+    </Reveal>
+    <Reveal>
+      <section class="section">
+        <h2>Selected Work</h2>
+        <p class="muted" style="margin-top: 1rem; max-width: 48ch;">
+          Placeholder — real project cards coming in the next tasks.
+        </p>
+      </section>
+    </Reveal>
+    <Reveal>
+      <section class="section">
+        <h2>About</h2>
+        <p class="muted" style="margin-top: 1rem; max-width: 48ch;">
+          Placeholder — real sections coming in the next tasks.
+        </p>
+      </section>
+    </Reveal>
   </div>
 </BaseLayout>
