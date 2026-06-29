@@ -63,19 +63,22 @@ import swiftIcon from '../assets/swift-icon.png';
             <i class="hero-dot hero-dot--red"></i>
             <i class="hero-dot hero-dot--yellow"></i>
             <i class="hero-dot hero-dot--green"></i>
+            <span class="hero-filename">ScoreView.swift</span>
             <Image src={swiftIcon} alt="" class="hero-swift-icon" width={28} />
-            <span class="hero-filename">FoodScore.swift</span>
           </div>
           <div class="hero-code">
-            <span class="syn-kw">struct</span> <span class="syn-ty">FoodScore</span>: <span class="syn-ty">View</span> &#123;<br />
-            &nbsp;&nbsp;<span class="syn-kw">let</span> score = <span class="syn-nm">87</span><span class="syn-cm">&nbsp;// &#8594; ring number</span><br />
+            <span class="syn-kw">struct</span> <span class="syn-ty">ScoreView</span>: <span class="syn-ty">View</span> &#123;<br />
+            &nbsp;&nbsp;<span class="syn-kw">let</span> product: <span class="syn-ty">Product</span><br />
             &nbsp;&nbsp;<span class="syn-kw">var</span> body: <span class="syn-kw">some</span> <span class="syn-ty">View</span> &#123;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">Circle</span>().<span class="syn-fn">trim</span>(to: <span class="syn-nm">0.87</span>)<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="syn-fn">stroke</span>(.<span class="syn-nm">orange</span>, lineWidth: <span class="syn-nm">12</span>)<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">Text</span>(<span class="syn-st">&#34;\(</span>score<span class="syn-st">)&#34;</span>).<span class="syn-fn">font</span>(.<span class="syn-nm">largeTitle</span>)<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">ForEach</span>(nutrients, <span class="syn-ty">NutrientBar</span>.<span class="syn-kw">init</span>)<span class="hero-caret"></span><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">VStack</span>(spacing: <span class="syn-nm">16</span>) &#123;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">ScoreRing</span>(value: product.score)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">Text</span>(product.rating)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">ForEach</span>(product.breakdown) &#123; metric <span class="syn-kw">in</span><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-ty">MetricBar</span>(metric)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#125;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&#125;<br />
             &nbsp;&nbsp;&#125;<br />
-            &#125;
+            &#125;<span class="hero-caret"></span>
           </div>
         </div>
 
@@ -458,7 +461,7 @@ import swiftIcon from '../assets/swift-icon.png';
     width: 14px;
     height: 14px;
     border-radius: 4px;
-    margin-left: 4px;
+    margin-left: auto; /* push to the far right of the title bar for symmetry */
     flex-shrink: 0;
   }
 
