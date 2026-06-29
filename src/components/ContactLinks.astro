@@ -3,11 +3,10 @@
 // Self-contained contact links block — used on homepage and reused on /contact page.
 // Real external links open in a new tab; placeholder (#) links do not get target/rel
 // (those attributes are inert/misleading on a fragment href).
-// TODO: replace # placeholders for LinkedIn and GemTechLabs once real URLs are available.
 const links = [
-  { label: 'LinkedIn', href: '#', aria: 'Connect with Guilherme de Mello on LinkedIn' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/guilherme-demello/', aria: 'Connect with Guilherme de Mello on LinkedIn' },
   { label: 'GitHub', href: 'https://github.com/guilhermemello07', aria: "View Guilherme de Mello's GitHub profile" },
-  { label: 'GemTechLabs AI', href: '#', aria: 'Visit GemTechLabs AI website' },
+  { label: 'GemTechLabs AI', href: 'https://gemtechlabsai.com', aria: 'Visit GemTechLabs AI website' },
 ];
 const isExternal = (href: string) => href.startsWith('http');
 ---
