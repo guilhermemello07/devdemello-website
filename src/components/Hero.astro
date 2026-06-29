@@ -274,7 +274,7 @@ import swiftIcon from '../assets/swift-icon.png';
 
   .hero-codecard {
     position: absolute;
-    width: min(300px, 90%);
+    width: min(360px, 92%);
     background: #161618;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--r-card);
@@ -333,6 +333,8 @@ import swiftIcon from '../assets/swift-icon.png';
     line-height: 1.65;
     padding: 12px 14px;
     color: #e0e0e4;
+    /* keep each logical line (e.g. the trailing closure) intact — we break with <br> */
+    white-space: nowrap;
   }
 
   /* Syntax highlight classes — use design-token values */
