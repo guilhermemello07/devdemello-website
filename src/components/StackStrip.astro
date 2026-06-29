@@ -1,7 +1,7 @@
 ---
 // StackStrip.astro
 // Horizontal mono strip of tech keywords.
-// "Swift" and "Claude API" render in accent colour.
+// Only "Swift" renders in accent colour; everything else uses the default text colour.
 
 interface Props {
   items?: { label: string; accent?: boolean }[];
@@ -13,7 +13,7 @@ const defaultItems: { label: string; accent?: boolean }[] = [
   { label: 'Swift Concurrency' },
   { label: 'Combine' },
   { label: 'Clean Architecture' },
-  { label: 'Claude API', accent: true },
+  { label: 'Claude API' },
   { label: 'Foundation Models' },
   { label: 'CI/CD' },
 ];

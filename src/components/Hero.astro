@@ -16,6 +16,10 @@
  * Scrub driver: native CSS `animation-timeline: scroll(root)` (preferred).
  * See hero-scrub comments in <style> for the view-timeline alternative if needed.
  */
+import { Image } from 'astro:assets';
+import foodlensLight from '../assets/foodlens-light.png';
+import foodlensDark from '../assets/foodlens-dark.png';
+import swiftIcon from '../assets/swift-icon.png';
 ---
 
 <section class="hero-track" aria-label="Hero — Guilherme de Mello, Senior iOS Engineer">
@@ -59,6 +63,7 @@
             <i class="hero-dot hero-dot--red"></i>
             <i class="hero-dot hero-dot--yellow"></i>
             <i class="hero-dot hero-dot--green"></i>
+            <Image src={swiftIcon} alt="" class="hero-swift-icon" width={28} />
             <span class="hero-filename">FoodScore.swift</span>
           </div>
           <div class="hero-code">
@@ -82,27 +87,21 @@
           <div class="hero-phone-tilt">
           <div class="hero-phone">
             <div class="hero-pscreen">
-              <div class="hero-notch"></div>
-              <div class="hero-ptitle">Health Score</div>
-              <div class="hero-ring"></div>
-              <div class="hero-nut hero-nut--1">
-                <span class="hero-nut-label">Sugars</span>
-                <div class="hero-nut-track">
-                  <div class="hero-nut-fill" style="width:30%"></div>
-                </div>
-              </div>
-              <div class="hero-nut hero-nut--2">
-                <span class="hero-nut-label">Additives</span>
-                <div class="hero-nut-track">
-                  <div class="hero-nut-fill" style="width:12%"></div>
-                </div>
-              </div>
-              <div class="hero-nut hero-nut--3">
-                <span class="hero-nut-label">Protein</span>
-                <div class="hero-nut-track">
-                  <div class="hero-nut-fill" style="width:72%"></div>
-                </div>
-              </div>
+              <!-- Real FoodLens screenshots, swapped to match the active theme -->
+              <Image
+                src={foodlensLight}
+                alt="FoodLens app showing a product health score"
+                class="hero-shot hero-shot--light"
+                width={480}
+                loading="eager"
+              />
+              <Image
+                src={foodlensDark}
+                alt="FoodLens app showing a product health score"
+                class="hero-shot hero-shot--dark"
+                width={480}
+                loading="eager"
+              />
             </div>
           </div>
           </div><!-- /hero-phone-tilt -->
@@ -413,13 +412,13 @@
      -------------------------------------------------------------------------- */
   .hero-phone {
     position: relative;
-    width: 140px;
-    height: 280px;
-    border-radius: 30px;
+    width: 150px;
+    height: 326px; /* ~19.5:9, matches the iPhone screenshot aspect */
+    border-radius: 32px;
     background: linear-gradient(160deg, #1c1c1e, #0e0e10);
     border: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    padding: 9px;
+    padding: 7px;
     animation: heroDevicePulse 3.2s ease-in-out infinite;
   }
 
@@ -438,103 +437,29 @@
     overflow: hidden;
   }
 
-  /* Notch */
-  .hero-notch {
+  /* Real FoodLens screenshots — swapped by theme (default = light) */
+  .hero-shot {
     position: absolute;
-    top: 9px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 42px;
-    height: 11px;
-    border-radius: 99px;
-    background: #000;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
   }
 
-  /* App title */
-  .hero-ptitle {
-    position: absolute;
-    top: 30px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    color: #8a8a8e;
-  }
+  .hero-shot--dark { display: none; }
+  html[data-theme='dark'] .hero-shot--light { display: none; }
+  html[data-theme='dark'] .hero-shot--dark { display: block; }
 
-  /* Score ring: conic-gradient maps 87% arc → score 87 */
-  .hero-ring {
-    position: absolute;
-    top: 54px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    background: conic-gradient(var(--accent) 0 87%, #2c2c2e 87% 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: heroRingPulse 3.2s ease-in-out infinite;
-  }
-
-  /* Inner circle with "87" — matches `let score = 87` + `Text("\(score)")` */
-  .hero-ring::after {
-    content: '87';
-    width: 74px;
-    height: 74px;
-    border-radius: 50%;
-    background: #0d0d0f;
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  @keyframes heroRingPulse {
-    0%, 100% { transform: translateX(-50%) scale(1); }
-    50%       { transform: translateX(-50%) scale(1.04); }
-  }
-
-  /* Nutrient bars — ForEach(nutrients, NutrientBar.init) */
-  .hero-nut {
-    position: absolute;
-    left: 16px;
-    right: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 9px;
-    color: #c7c7cc;
-  }
-
-  .hero-nut-label {
-    width: 54px;
+  /* Swift app-icon in the code card titlebar — signals the language at a glance */
+  .hero-swift-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    margin-left: 4px;
     flex-shrink: 0;
   }
-
-  .hero-nut-track {
-    flex: 1;
-    height: 6px;
-    border-radius: 3px;
-    background: #1c1c1e;
-    overflow: hidden;
-  }
-
-  .hero-nut-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: var(--accent);
-  }
-
-  /* Positions match the three rows: Sugars, Additives, Protein */
-  .hero-nut--1 { top: 172px; }
-  .hero-nut--2 { top: 194px; }
-  .hero-nut--3 { top: 216px; }
 
   /* ==========================================================================
      MOBILE (≤760px) — Collapse 200vh pin; one-shot IntersectionObserver morph
