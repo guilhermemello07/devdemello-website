@@ -1,0 +1,61 @@
+---
+// contact.astro
+// Contact page — editorial headline + ContactLinks reuse. No form, no email by design.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Reveal from '../components/Reveal.astro';
+import ContactLinks from '../components/ContactLinks.astro';
+---
+
+<BaseLayout
+  title="Contact · Guilherme de Mello"
+  description="Get in touch with Guilherme de Mello — open to senior iOS roles, freelance projects, and speaking engagements."
+>
+  <section class="section contact-section">
+    <div class="container contact-container">
+      <Reveal>
+        <p class="eyebrow">Let's talk</p>
+        <h1 class="serif contact-headline">Building something native?</h1>
+        <p class="contact-lead muted">
+          Open to senior iOS roles, freelance, and speaking.
+        </p>
+        <ContactLinks />
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-section {
+    min-height: calc(100vh - var(--nav-height, 64px));
+    display: flex;
+    align-items: center;
+  }
+
+  .contact-container {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+
+  .contact-headline {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.1;
+    margin-top: var(--sp-2);
+    color: var(--text);
+  }
+
+  .contact-lead {
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    max-width: 42ch;
+    line-height: 1.6;
+    margin-top: calc(-1 * var(--sp-2));
+  }
+
+  @media (max-width: 760px) {
+    .contact-section {
+      align-items: flex-start;
+    }
+  }
+</style>
