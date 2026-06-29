@@ -1,8 +1,10 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Reveal from '../components/Reveal.astro';
 import Timeline from '../components/Timeline.astro';
 import SpeakingList from '../components/SpeakingList.astro';
+import profileImg from '../assets/profile.png';
 
 const timelineItems = [
   {
@@ -69,12 +71,15 @@ const chips = [
     <div class="container">
       <div class="intro-grid">
 
-        <!-- Photo-optional visual: Swift-orange monogram -->
-        <div class="intro-visual" aria-hidden="true">
-          <div class="monogram-block">
-            <span class="monogram-text serif">GM</span>
-            <span class="monogram-dot accent">.</span>
-          </div>
+        <!-- Profile photo (grayscale → color on hover) -->
+        <div class="intro-visual">
+          <Image
+            src={profileImg}
+            alt="Guilherme de Mello, smiling, wearing a black hoodie"
+            class="intro-photo"
+            width={480}
+            loading="eager"
+          />
         </div>
 
         <!-- Intro copy -->
@@ -129,44 +134,28 @@ const chips = [
     align-items: center;
   }
 
-  /* Monogram visual */
+  /* Profile photo */
   .intro-visual {
     flex-shrink: 0;
   }
 
-  .monogram-block {
-    width: clamp(100px, 14vw, 160px);
-    height: clamp(100px, 14vw, 160px);
+  .intro-photo {
+    width: clamp(170px, 22vw, 240px);
+    height: auto;
     border-radius: var(--r-frame);
-    background: var(--surface);
     border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(2rem, 4vw, 3rem);
-    user-select: none;
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+    display: block;
+    /* Stays monochrome with the brand until you engage with it */
+    filter: grayscale(1) contrast(1.02);
+    transition:
+      filter var(--dur-hover) var(--ease-out),
+      transform var(--dur-hover) var(--ease-out);
   }
 
-  /* Subtle orange glow behind the monogram */
-  .monogram-block::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 60% 40%, rgba(240, 81, 56, 0.12) 0%, transparent 70%);
-  }
-
-  .monogram-text {
-    color: var(--text);
-    letter-spacing: -0.02em;
-    position: relative;
-    z-index: 1;
-  }
-
-  .monogram-dot {
-    position: relative;
-    z-index: 1;
+  .intro-photo:hover {
+    filter: grayscale(0);
+    transform: translateY(-3px);
   }
 
   /* Intro copy */
@@ -231,10 +220,8 @@ const chips = [
       align-self: start;
     }
 
-    .monogram-block {
-      width: 80px;
-      height: 80px;
-      font-size: 1.5rem;
+    .intro-photo {
+      width: 150px;
     }
 
     .intro-name {

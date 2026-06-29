@@ -29,3 +29,6 @@ npm-debug.log*
 
 # Private working reference (not published)
 plan.md
+
+# Personal asset staging (originals; wired copies live in public/ and src/assets/)
+/assets/
