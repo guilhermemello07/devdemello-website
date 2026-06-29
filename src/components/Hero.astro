@@ -85,7 +85,6 @@ import swiftIcon from '../assets/swift-icon.png';
         <!-- Phone / app (scrubs IN as you scroll) -->
         <div class="hero-phonewrap">
           <div class="hero-glow"></div>
-          <!-- hero-phone-tilt: receives rotateX/Y from hero-tilt.ts -->
           <!-- hero-phone: receives the time-based devicePulse scale -->
           <div class="hero-phone-tilt">
           <div class="hero-phone">
@@ -118,11 +117,6 @@ import swiftIcon from '../assets/swift-icon.png';
 <!-- hero-scrub: hero-scoped scroll progress var --p (robust to page length) -->
 <script>
   import '../scripts/hero-scrub.ts';
-</script>
-
-<!-- hero-tilt: pointer-driven 3D tilt on the phone; disabled on touch + reduced-motion -->
-<script>
-  import '../scripts/hero-tilt.ts';
 </script>
 
 <!-- Mobile one-shot morph: IntersectionObserver adds .morph-triggered to hero-pin -->
@@ -404,8 +398,7 @@ import swiftIcon from '../assets/swift-icon.png';
   }
 
   /* --------------------------------------------------------------------------
-     Phone tilt wrapper — receives rotateX/Y from hero-tilt.ts.
-     Separated from .hero-phone so JS transform doesn't fight the CSS pulse.
+     Phone wrapper (kept as a structural layer around .hero-phone).
      -------------------------------------------------------------------------- */
   .hero-phone-tilt {
     transform-style: preserve-3d;
