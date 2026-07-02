@@ -1,0 +1,255 @@
+---
+// WorkCard.astro
+// Project card. The media area shows, in priority order:
+//   1. `icon`  — a square app icon, centered as a rounded tile on a backdrop
+//   2. `image` — a full-bleed 16:9 screenshot
+//   3. neither — a "screenshot" placeholder
+// Whole card links if href provided.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  title: string;
+  blurb: string;
+  meta: string;
+  href?: string;
+  image?: string;
+  icon?: ImageMetadata;
+  /** Brand colour for the icon backdrop wash (any CSS colour). */
+  tint?: string;
+  cta?: string;
+}
+
+const {
+  title,
+  blurb,
+  meta,
+  href,
+  image,
+  icon,
+  tint,
+  cta = 'View project →',
+} = Astro.props;
+
+const Tag = href ? 'a' : 'div';
+const linkProps = href
+  ? {
+      href,
+      ...(href !== '#' && !href.startsWith('/')
+        ? { target: '_blank', rel: 'noopener noreferrer' }
+        : {}),
+      'aria-label': blurb ? `${title} — ${blurb}` : title,
+    }
+  : {};
+---
+
+<Tag class="work-card" style={tint ? `--card-tint: ${tint};` : undefined} {...linkProps}>
+  <div class="work-card-image" aria-hidden="true">
+    {icon ? (
+      <div class="work-card-iconwrap">
+        <Image
+          src={icon}
+          alt=""
+          class="work-card-icon"
+          width={192}
+          densities={[1.5, 2]}
+          loading="lazy"
+        />
+      </div>
+    ) : image ? (
+      <img src={image} alt={title} loading="lazy" decoding="async" />
+    ) : (
+      <div class="work-card-placeholder">
+        <span class="mono work-card-placeholder-label">screenshot</span>
+      </div>
+    )}
+  </div>
+  <div class="work-card-body">
+    <h3 class="work-card-title serif">{title}</h3>
+    <p class="work-card-blurb muted">{blurb}</p>
+    <p class="work-card-meta mono">{meta}</p>
+    {cta && (
+      <span class="work-card-cta mono" aria-hidden="true">{cta}</span>
+    )}
+  </div>
+</Tag>
+
+<style>
+  .work-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    transition:
+      transform var(--dur-hover) var(--ease-out),
+      box-shadow var(--dur-hover) var(--ease-out),
+      border-color var(--dur-hover) var(--ease-out);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .work-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    /* Each card hovers in its own app colour; cards without a tint fall back
+       to the brand accent. */
+    border-color: var(--card-tint, var(--accent));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-card {
+      transition: none;
+    }
+    .work-card:hover {
+      transform: none;
+    }
+  }
+
+  /* Image area */
+  .work-card-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+
+  .work-card-image > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .work-card:hover .work-card-image > img {
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-card:hover .work-card-image > img {
+      transform: none;
+    }
+  }
+
+  /* App-icon tile — centered square icon on a soft backdrop */
+  .work-card-iconwrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Soft brand-coloured wash behind the icon. --card-tint is set per card on
+       the card root; it falls back to a neutral surface tone when no tint is
+       provided. The low color-mix percentages keep it subtle in both themes. */
+    background:
+      radial-gradient(
+        115% 90% at 50% 32%,
+        color-mix(in srgb, var(--card-tint, var(--surface-2)) 24%, transparent) 0%,
+        color-mix(in srgb, var(--card-tint, var(--surface-2)) 9%, transparent) 52%,
+        transparent 100%
+      ),
+      var(--surface);
+  }
+
+  .work-card-icon {
+    width: clamp(72px, 30%, 100px);
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 22.5%; /* iOS-style squircle approximation */
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    /* Hairline keeps light icons (e.g. cream/white) defined against the backdrop */
+    outline: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    outline-offset: -1px;
+    transition: transform var(--dur-hover) var(--ease-out);
+  }
+
+  .work-card:hover .work-card-icon {
+    transform: scale(1.05) translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-card:hover .work-card-icon {
+      transform: none;
+    }
+  }
+
+  /* Placeholder (no image) */
+  .work-card-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      var(--surface-2) 0%,
+      var(--surface) 60%,
+      var(--surface-2) 100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .work-card-placeholder-label {
+    font-size: var(--fs-mono-label);
+    color: var(--text-dim);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Card body */
+  .work-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    flex: 1;
+  }
+
+  .work-card-title {
+    font-size: var(--fs-h3);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .work-card-blurb {
+    font-size: var(--fs-body);
+    line-height: 1.55;
+    color: var(--text-muted);
+    /* Reserve a fixed 3-line block so every card has the same blurb height —
+       shorter blurbs hold the space, longer ones clamp with an ellipsis. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    min-height: calc(1.55em * 3);
+  }
+
+  .work-card-meta {
+    font-size: var(--fs-mono-label);
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+    margin-top: auto;
+  }
+
+  .work-card-cta {
+    font-size: var(--fs-mono-label);
+    color: var(--card-tint, var(--accent));
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-block;
+    transition: letter-spacing var(--dur-hover) var(--ease-out);
+  }
+
+  .work-card:hover .work-card-cta {
+    letter-spacing: 0.1em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-card:hover .work-card-cta {
+      letter-spacing: 0.06em;
+    }
+  }
+</style>

@@ -1,0 +1,241 @@
+---
+// index.astro
+// Home page — the full scrolling story.
+// Section order: Hero → Stack → Featured Work → Credibility → Writing → Contact CTA
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Reveal from '../components/Reveal.astro';
+import StackStrip from '../components/StackStrip.astro';
+import WorkCard from '../components/WorkCard.astro';
+import WritingTeaser from '../components/WritingTeaser.astro';
+import ContactLinks from '../components/ContactLinks.astro';
+import foodlensLogo from '../assets/foodlens-logo.png';
+import jornadaLogo from '../assets/jornada-logo.png';
+import folioLogo from '../assets/folio-logo.png';
+---
+
+<BaseLayout
+  title="Guilherme de Mello — Senior iOS Engineer"
+  description="Senior iOS Engineer based in Dublin. Crafting native Swift apps that feel inevitable — from architecture to App Store."
+>
+  <!-- Section 1: Hero — signature sticky-pin scrub -->
+  <Hero />
+
+  <!-- Section 1b: Intro / bio --------------------------------------------- -->
+  <Reveal as="section" class="section-intro">
+    <div class="container section">
+      <p class="eyebrow section-eyebrow">Who's writing this</p>
+      <div class="intro-prose">
+        <p>
+          6+ years writing iOS end to end. Currently at EIDA Solutions in
+          Ireland, I own the full platform and lead the implementation of
+          ambitious features, like Slopes, the migration of login to Auth0,
+          and the modernisation of the platform from RxSwift&nbsp;/&nbsp;UIKit
+          to Combine&nbsp;/&nbsp;SwiftUI.
+        </p>
+        <p>
+          I care about the things that actually break apps in production,
+          data races, retain cycles, and the memory issues that hide until
+          you're at scale.
+        </p>
+        <p>
+          On the side I ship AI-powered apps on the App Store. I write, I
+          speak at conferences like iOSDevUK, and I've authored a book on
+          native iOS development.
+        </p>
+      </div>
+    </div>
+  </Reveal>
+
+  <!-- Section 2: Stack ---------------------------------------------------- -->
+  <Reveal as="section" class="section-stack">
+    <div class="container section">
+      <header class="section-header">
+        <h2 class="serif section-heading">The toolkit.</h2>
+      </header>
+      <StackStrip />
+    </div>
+  </Reveal>
+
+  <!-- Section 3: Featured Work --------------------------------------------- -->
+  <Reveal as="section" id="work" class="section-work">
+    <div class="container section">
+      <header class="section-header">
+        <p class="eyebrow section-eyebrow">Selected work</p>
+        <h2 class="serif section-heading">Apps built to last.</h2>
+      </header>
+
+      <div class="work-scroller" role="list">
+        <!-- FoodLens -->
+        <WorkCard
+          title="FoodLens"
+          blurb="AI food intelligence, scan a barcode and get an instant health score powered by Claude and on-device Foundation Models."
+          meta="SwiftUI · Claude API · RevenueCat"
+          href="https://apps.apple.com/ie/app/foodlens-ai-food-scanner/id6759176098"
+          cta="View on App Store →"
+          icon={foodlensLogo}
+          tint="#62B33F"
+        />
+
+        <!-- Jornada -->
+        <WorkCard
+          title="Jornada"
+          blurb="Personalised AI trip optimisation, fully native and offline-first. Plans adapt to your pace, not a server's."
+          meta="SwiftUI · Claude API · MVVM-C"
+          icon={jornadaLogo}
+          tint="#E8742C"
+          cta="In Development"
+        />
+        <!-- TODO: replace href when project page is live -->
+
+        <!-- Folio -->
+        <WorkCard
+          title="Folio"
+          blurb="A Strava for readers, track books, log reading sessions, and share your progress with a community of fellow readers."
+          meta="SwiftUI · SwiftData · Social"
+          icon={folioLogo}
+          tint="#9B4A47"
+          cta="In Development"
+        />
+        <!-- TODO: replace blurb/meta/href with real Folio details when ready -->
+      </div>
+    </div>
+  </Reveal>
+
+  <!-- Section 5: Writing ---------------------------------------------------- -->
+  <Reveal as="section" class="section-writing">
+    <div class="container section">
+      <header class="section-header">
+        <p class="eyebrow section-eyebrow">From the blog</p>
+        <h2 class="serif section-heading">Thinking out loud.</h2>
+      </header>
+      <WritingTeaser />
+    </div>
+  </Reveal>
+
+  <!-- Section 6: Contact CTA ------------------------------------------------ -->
+  <Reveal as="section" id="contact-cta" class="section-contact">
+    <div class="container section">
+      <p class="eyebrow section-eyebrow">Say hello</p>
+      <h2 class="serif section-heading">Let's talk Swift.</h2>
+      <p class="section-lead muted">
+        I love meeting people who care about iOS craft. Reach out to swap
+        ideas, talk SwiftUI and AI, or just say hello.
+      </p>
+      <ContactLinks />
+    </div>
+  </Reveal>
+
+</BaseLayout>
+
+<style>
+  /* ==========================================================================
+     Shared section scaffolding
+     ========================================================================== */
+
+  .section-eyebrow {
+    margin-bottom: var(--sp-5);
+  }
+
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--sp-7);
+  }
+
+  .section-heading {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: var(--fs-h2);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--text);
+  }
+
+  .section-lead {
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    max-width: 52ch;
+    color: var(--text-muted);
+    margin-top: var(--sp-4);
+    margin-bottom: var(--sp-7);
+  }
+
+  /* ==========================================================================
+     Section 1b — Intro / bio prose
+     ========================================================================== */
+  .intro-prose {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    max-width: 62ch;
+  }
+
+  .intro-prose p {
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .intro-prose p:first-child {
+    /* Lead paragraph reads slightly stronger than the rest */
+    color: var(--text);
+  }
+
+  /* ==========================================================================
+     Section 2 — Stack
+     Subtle surface bg to visually separate from the hero.
+     ========================================================================== */
+  .section-stack {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ==========================================================================
+     Section 3 — Work Scroller
+     Horizontal scroll-snap row. On wide screens the three cards fill the row;
+     on narrower viewports they become a swipeable, snapping carousel.
+     ========================================================================== */
+  .work-scroller {
+    display: flex;
+    align-items: stretch; /* all cards share the tallest card's height */
+    gap: var(--sp-5);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--sp-4);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    /* overflow-x:auto forces overflow-y to clip too — so the hover lift and
+       box-shadow would be cut off. We inflate the scroll viewport with padding
+       and cancel it with equal negative margins, giving the shadow room to
+       render without shifting the row's position in the layout. Inline bleed
+       stays under the container's min padding (1.25rem) to avoid x-overflow. */
+    padding-block: var(--sp-6);
+    padding-inline: var(--sp-4);
+    margin-block: calc(-1 * var(--sp-6));
+    margin-inline: calc(-1 * var(--sp-4));
+  }
+
+  /* :global() is required — the cards are rendered by the WorkCard component,
+     so a plain scoped selector here would not match them and the flex sizing
+     would silently not apply (cards would size to content, unequal widths). */
+  .work-scroller > :global(.work-card) {
+    flex: 0 0 calc((100% - 2 * var(--sp-5)) / 3);
+    scroll-snap-align: start;
+  }
+
+  @media (max-width: 900px) {
+    .work-scroller > :global(.work-card) {
+      flex-basis: clamp(260px, 78%, 360px);
+    }
+  }
+
+  /* ==========================================================================
+     Section 6 — Contact CTA
+     ========================================================================== */
+  .section-contact {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+</style>

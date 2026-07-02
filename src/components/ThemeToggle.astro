@@ -1,0 +1,118 @@
+---
+// ThemeToggle.astro
+// Sun/moon button that flips data-theme + persists in localStorage.
+---
+
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  aria-label="Switch to dark mode"
+  type="button"
+>
+  <!-- Sun icon (shown when dark theme is active, to switch to light) -->
+  <svg
+    class="icon-sun"
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+
+  <!-- Moon icon (shown when light theme is active, to switch to dark) -->
+  <svg
+    class="icon-moon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+</button>
+
+<script>
+  import { initThemeToggle } from '../scripts/theme.ts';
+
+  const button = document.getElementById('theme-toggle') as HTMLButtonElement | null;
+  if (button) {
+    initThemeToggle(button);
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--r-pill);
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      background var(--dur-hover) var(--ease-out),
+      color var(--dur-hover) var(--ease-out),
+      border-color var(--dur-hover) var(--ease-out),
+      transform var(--dur-hover) var(--ease-out);
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--text-dim);
+    transform: translateY(-1px);
+  }
+
+  .theme-toggle:active {
+    transform: translateY(0);
+  }
+
+  /* Icon visibility driven by [data-theme] on <html> (set pre-paint by the
+     no-FOUC inline script) so exactly one icon shows before JS hydrates.
+     Sun = shown in dark mode (click → switch to light);
+     Moon = shown in light mode (click → switch to dark).
+     :global() escapes Astro's component scoping for the html-level selector. */
+  .icon-sun,
+  .icon-moon {
+    display: none;
+  }
+
+  :global(html[data-theme='dark']) .icon-sun {
+    display: block;
+  }
+
+  :global(html[data-theme='light']) .icon-moon {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-toggle {
+      transition: none;
+    }
+  }
+</style>

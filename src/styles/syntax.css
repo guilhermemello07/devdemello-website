@@ -1,0 +1,94 @@
+/* ==========================================================================
+   Syntax Highlighting
+   Six syntax color variables + Shiki block blending with --surface.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Syntax color tokens
+   -------------------------------------------------------------------------- */
+:root {
+  --syntax-keyword: #FF7AB2;
+  --syntax-type: #5DD8FF;
+  --syntax-string: #FF8170;
+  --syntax-function: #82D2CE;
+  --syntax-number: #D9C97E;
+  --syntax-comment: #6C6C70;
+}
+
+/* --------------------------------------------------------------------------
+   Shiki dual-theme code blocks
+
+   astro.config sets `defaultColor: false`, so Shiki emits BOTH
+   `--shiki-light` / `--shiki-light-bg` and `--shiki-dark` / `--shiki-dark-bg`
+   CSS variables on every <pre> and <span> (no baked literal `color:`).
+   We choose which set wins purely off the site's manual `data-theme` toggle
+   on <html>, so token colors AND background always match the chosen theme —
+   independent of the OS `prefers-color-scheme`. The authentic GitHub theme
+   background (`--shiki-*-bg`) is used so exactly one background wins per theme
+   with no conflicting `!important`.
+   -------------------------------------------------------------------------- */
+
+/* Outer container — structural styles (theme-independent) */
+pre.astro-code,
+pre[class*="language-"],
+.shiki {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: var(--sp-5);
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: var(--fs-small);
+  line-height: 1.7;
+}
+
+/* Light theme: token + background colors from the github-light palette */
+html[data-theme="light"] pre.astro-code,
+html[data-theme="light"] .shiki,
+html[data-theme="light"] pre.astro-code span,
+html[data-theme="light"] .shiki span {
+  color: var(--shiki-light);
+}
+html[data-theme="light"] pre.astro-code,
+html[data-theme="light"] .shiki {
+  background-color: var(--shiki-light-bg) !important;
+}
+
+/* Dark theme: token + background colors from the github-dark palette */
+html[data-theme="dark"] pre.astro-code,
+html[data-theme="dark"] .shiki,
+html[data-theme="dark"] pre.astro-code span,
+html[data-theme="dark"] .shiki span {
+  color: var(--shiki-dark) !important;
+}
+html[data-theme="dark"] pre.astro-code,
+html[data-theme="dark"] .shiki {
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* Scrollbar styling for code blocks */
+pre.astro-code::-webkit-scrollbar,
+.shiki::-webkit-scrollbar {
+  height: 6px;
+}
+
+pre.astro-code::-webkit-scrollbar-track,
+.shiki::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+pre.astro-code::-webkit-scrollbar-thumb,
+.shiki::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--r-pill);
+}
+
+/* Inline code (not inside a pre) */
+:not(pre) > code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.875em;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--syntax-string);
+}

@@ -1,0 +1,203 @@
+---
+// StackStrip.astro
+// Grouped toolkit — each category gets a label and a wrap of mono keyword chips.
+// On desktop the category label sits left of its chips; on mobile it stacks above.
+
+interface Group {
+  label: string;
+  items: string[];
+}
+
+interface Props {
+  groups?: Group[];
+}
+
+const defaultGroups: Group[] = [
+  {
+    label: 'Swift & Concurrency',
+    items: [
+      'Swift 6',
+      'strict concurrency',
+      'async/await',
+      'actors',
+      'Sendable',
+      'structured concurrency',
+      'Combine',
+      'GCD',
+      'ARC & memory management',
+    ],
+  },
+  {
+    label: 'UI',
+    items: [
+      'SwiftUI',
+      'UIKit',
+      'accessibility (VoiceOver, Dynamic Type)',
+      'Apple Human Interface Guidelines',
+    ],
+  },
+  {
+    label: 'Architecture',
+    items: [
+      'MVVM',
+      'MVVM-Coordinator',
+      'Clean Architecture',
+      'SOLID',
+      'Dependency Injection',
+      'Protocol-Oriented Programming',
+      'SPM modularisation',
+      'CocoaPods',
+    ],
+  },
+  {
+    label: 'AI & LLM',
+    items: [
+      'Anthropic Claude API',
+      'Claude Code',
+      'Codex',
+      'Apple Foundation Models',
+      'Agent configurations',
+      'Custom Skills',
+    ],
+  },
+  {
+    label: 'Data & Offline-first',
+    items: [
+      'GRDB',
+      'SQLite',
+      'Core Data',
+      'SwiftData',
+      'CloudKit',
+      'background sync',
+      'conflict resolution',
+      'caching',
+    ],
+  },
+  {
+    label: 'Networking',
+    items: [
+      'URLSession',
+      'Alamofire',
+      'REST',
+      'Codable',
+      'pagination',
+      'retry/backoff',
+    ],
+  },
+  {
+    label: 'Security & Auth',
+    items: [
+      'Keychain',
+      'Auth0 (OIDC/OAuth 2.0)',
+      'SSL/certificate pinning',
+      'biometrics',
+      'data protection',
+    ],
+  },
+  {
+    label: 'Quality & Delivery',
+    items: [
+      'XCTest',
+      'XCUITest',
+      'TDD',
+      'SwiftLint',
+      'Fastlane',
+      'GitHub Actions',
+      'Xcode Cloud',
+      'TestFlight',
+    ],
+  },
+  {
+    label: 'Monetisation & Observability',
+    items: [
+      'StoreKit 2',
+      'RevenueCat',
+      'Firebase',
+      'Crashlytics',
+      'Analytics',
+      'Remote Config',
+    ],
+  },
+];
+
+const { groups = defaultGroups } = Astro.props;
+---
+
+<dl class="stack-groups" aria-label="Technology toolkit">
+  {groups.map((group) => (
+    <div class="stack-group">
+      <dt class="stack-group-label mono">{group.label}</dt>
+      <dd class="stack-group-items">
+        {group.items.map((item) => (
+          <span class="stack-chip mono">{item}</span>
+        ))}
+      </dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .stack-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+    margin: 0;
+  }
+
+  .stack-group {
+    display: grid;
+    grid-template-columns: minmax(160px, 220px) 1fr;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: baseline;
+    padding-bottom: var(--sp-5);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stack-group:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .stack-group-label {
+    font-size: var(--fs-mono-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .stack-group-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin: 0;
+  }
+
+  .stack-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: var(--r-pill);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-size: var(--fs-small);
+    line-height: 1.2;
+    color: var(--text-muted);
+    transition:
+      color var(--dur-hover) var(--ease-out),
+      border-color var(--dur-hover) var(--ease-out);
+  }
+
+  .stack-chip:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  @media (max-width: 760px) {
+    .stack-group {
+      grid-template-columns: 1fr;
+      gap: var(--sp-3);
+    }
+  }
+</style>

@@ -1,0 +1,121 @@
+---
+// ContactLinks.astro
+// Self-contained contact links block — used on homepage and reused on /contact page.
+// Real external links open in a new tab; placeholder (#) links do not get target/rel
+// (those attributes are inert/misleading on a fragment href).
+const links = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/guilherme-demello/', aria: 'Connect with Guilherme de Mello on LinkedIn' },
+  { label: 'GitHub', href: 'https://github.com/guilhermemello07', aria: "View Guilherme de Mello's GitHub profile" },
+  { label: 'GemTechLabs AI', href: 'https://gemtechlabsai.com', aria: 'Visit GemTechLabs AI website' },
+];
+const isExternal = (href: string) => href.startsWith('http');
+---
+
+<div class="contact-links">
+
+  <!-- Primary CTA: Download CV -->
+  <a
+    href="/cv/GuilhermeMello-CV.pdf"
+    download
+    class="btn btn-solid contact-cv"
+    aria-label="Download Guilherme de Mello's CV as PDF"
+  >
+    Download CV
+  </a>
+
+  <!-- Link rows -->
+  <ul class="contact-list" role="list">
+    {links.map((link) => (
+      <li class="contact-item">
+        <a
+          href={link.href}
+          class="contact-link"
+          target={isExternal(link.href) ? '_blank' : undefined}
+          rel={isExternal(link.href) ? 'noopener noreferrer' : undefined}
+          aria-label={isExternal(link.href) ? `${link.aria} (opens in new tab)` : link.aria}
+        >
+          <span class="contact-label">{link.label}</span>
+          <span class="contact-arrow accent" aria-hidden="true">→</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    max-width: 480px;
+  }
+
+  .contact-cv {
+    align-self: flex-start;
+  }
+
+  .contact-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    padding: var(--sp-4) 0;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      color var(--dur-hover) var(--ease-out),
+      padding-left var(--dur-hover) var(--ease-out);
+  }
+
+  .contact-link:hover {
+    color: var(--text);
+    padding-left: var(--sp-3);
+  }
+
+  .contact-link:hover .contact-label {
+    color: var(--text);
+  }
+
+  .contact-label {
+    font-size: var(--fs-body);
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+
+  .contact-arrow {
+    font-size: 1.1rem;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+    transition: transform var(--dur-hover) var(--ease-out);
+  }
+
+  .contact-link:hover .contact-arrow {
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-link {
+      transition: none;
+    }
+
+    .contact-link:hover {
+      padding-left: 0;
+    }
+
+    .contact-link:hover .contact-arrow {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,281 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Reveal from '../components/Reveal.astro';
+import Timeline from '../components/Timeline.astro';
+import SpeakingList from '../components/SpeakingList.astro';
+import profileImg from '../assets/profile.png';
+
+const timelineItems = [
+  {
+    when: '2024 — Present',
+    role: 'Senior iOS Engineer',
+    org: 'EIDA Solutions',
+    place: 'Dublin, Ireland',
+    note: 'End-to-end native iOS for construction field workflows; 99%+ crash-free; led RxSwift→Combine & UIKit→SwiftUI modernisation; Slope Verification smart-annotation feature (PDFTron).',
+  },
+  {
+    when: '2022 — Present',
+    role: 'iOS Developer (side projects)',
+    org: 'GEM TechLabs AI',
+    note: 'Shipping consumer apps end-to-end; production AI via the Anthropic Claude API (FoodLens, Jornada).',
+  },
+  {
+    when: '2021 — 2023',
+    role: 'iOS Developer & President of the Bidding Committee',
+    org: 'Cabo Frio City Hall',
+    place: 'Brazil',
+    note: 'Internal iOS apps across finance, healthcare, social-assistance; secure data handling for citizen data.',
+  },
+  {
+    when: '2020 — 2021',
+    role: 'iOS Developer',
+    org: 'MM Trade Group',
+    note: 'Shipped two native iOS apps end-to-end (Swift/UIKit), full lifecycle to App Store.',
+  },
+];
+
+const speakingItems = [
+  {
+    when: 'Sept 2026',
+    title: 'iOSDevUK',
+    detail: 'Conference speaker',
+    upcoming: true,
+  },
+  {
+    when: '2025',
+    title: 'WWDC25 — Apple Park',
+    detail: 'Invited attendee',
+  },
+  {
+    when: 'Ongoing',
+    title: 'Native iOS community talks',
+    detail: 'Various speaking engagements',
+  },
+];
+
+const chips = [
+  'WWDC25',
+  'iOSDevUK speaker',
+  'B.Sc. CS · ATU (expected 2027)',
+  'Hacking with Swift+ · 4y',
+];
+---
+
+<BaseLayout
+  title="About · Guilherme de Mello"
+  description="Senior iOS Engineer based in Dublin. 6+ years building crash-free Swift apps — from architecture to App Store. Speaker, WWDC25 attendee, and indie dev."
+>
+  <!-- ── Intro ───────────────────────────────────────────────────── -->
+  <Reveal as="section" class="section about-intro">
+    <div class="container">
+      <div class="intro-grid">
+
+        <!-- Profile photo (grayscale → color on hover) -->
+        <div class="intro-visual">
+          <Image
+            src={profileImg}
+            alt="Guilherme de Mello, smiling, wearing a black hoodie"
+            class="intro-photo"
+            width={480}
+            loading="eager"
+          />
+        </div>
+
+        <!-- Intro copy -->
+        <div class="intro-copy">
+          <p class="eyebrow">Who I am</p>
+          <h1 class="serif intro-name">Guilherme de Mello</h1>
+          <div class="intro-lead">
+            <p>
+              I'm Guilherme, an Italian-Brazilian iOS Engineer who moved from
+              Brazil to Ireland in 2024 and never looked back. I live in the
+              Irish midlands with my wife, and most of our weekends have
+              involved a car, a map, and another stretch of coastline worth
+              the drive.
+            </p>
+            <p>
+              Away from Swift, I'm usually cooking, somewhere deep in Tolkien
+              lore, or chasing the next idea for an app. I hold Italian and
+              Brazilian citizenship, speak English, Portuguese and Italian
+              fluently, and I genuinely like building and living between
+              cultures — I think it's shaped how I work as much as anything
+              technical has.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </Reveal>
+
+  <!-- ── What I do ──────────────────────────────────────────────── -->
+  <Reveal as="section" class="section about-timeline">
+    <div class="container">
+      <header class="about-section-header">
+        <p class="eyebrow">What I do</p>
+        <h2 class="serif about-section-heading">The work, role by role.</h2>
+      </header>
+      <Timeline items={timelineItems} />
+
+      <!-- Download CV — mirrors the contact page CTA -->
+      <div class="about-cv">
+        <a
+          href="/cv/GuilhermeMello-CV.pdf"
+          download
+          class="btn btn-solid"
+          aria-label="Download Guilherme de Mello's CV as PDF"
+        >
+          Download CV
+        </a>
+      </div>
+    </div>
+  </Reveal>
+
+  <!-- ── Speaking & Community ──────────────────────────────────── -->
+  <Reveal as="section" class="section about-speaking">
+    <div class="container">
+      <p class="eyebrow">Speaking &amp; community</p>
+      <SpeakingList items={speakingItems} />
+    </div>
+  </Reveal>
+
+  <!-- ── Highlight Chips ───────────────────────────────────────── -->
+  <Reveal as="section" class="section about-chips">
+    <div class="container">
+      <ul class="chips-row" aria-label="Credentials and highlights">
+        {chips.map((chip) => (
+          <li class="chip mono">{chip}</li>
+        ))}
+      </ul>
+    </div>
+  </Reveal>
+</BaseLayout>
+
+<style>
+  /* ── Intro grid ──────────────────────────────────────────────── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  /* Profile photo */
+  .intro-visual {
+    flex-shrink: 0;
+  }
+
+  .intro-photo {
+    width: clamp(170px, 22vw, 240px);
+    height: auto;
+    border-radius: var(--r-frame);
+    border: 1px solid var(--border);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+    display: block;
+    /* Stays monochrome with the brand until you engage with it */
+    filter: grayscale(1) contrast(1.02);
+    transition:
+      filter var(--dur-hover) var(--ease-out),
+      transform var(--dur-hover) var(--ease-out);
+  }
+
+  .intro-photo:hover {
+    filter: grayscale(0);
+    transform: translateY(-3px);
+  }
+
+  /* Intro copy */
+  .intro-copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .intro-name {
+    font-size: var(--fs-h2);
+    line-height: 1.1;
+    margin-top: var(--sp-2);
+  }
+
+  .intro-lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    max-width: 56ch;
+  }
+
+  .intro-lead p {
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── Section headers (What I do, etc.) ───────────────────────── */
+  .about-section-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--sp-6);
+  }
+
+  .about-section-header .eyebrow {
+    margin-bottom: var(--sp-3);
+  }
+
+  .about-section-heading {
+    font-size: var(--fs-h2);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+
+  /* CV download button under the timeline */
+  .about-cv {
+    margin-top: var(--sp-6);
+  }
+
+  /* ── Speaking section ────────────────────────────────────────── */
+  .about-speaking .eyebrow {
+    margin-bottom: 0;
+  }
+
+  /* ── Chips row ───────────────────────────────────────────────── */
+  .chips-row {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--sp-2) var(--sp-4);
+    border-radius: var(--r-pill);
+    border: 1px solid var(--border);
+    font-size: var(--fs-mono-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface);
+    white-space: nowrap;
+  }
+
+  /* ── Responsive ──────────────────────────────────────────────── */
+  @media (max-width: 760px) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .intro-visual {
+      align-self: start;
+    }
+
+    .intro-photo {
+      width: 150px;
+    }
+
+    .intro-name {
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+    }
+  }
+</style>

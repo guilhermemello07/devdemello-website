@@ -1,0 +1,64 @@
+---
+// 404.astro
+// On-brand Not Found page. GitHub Pages and Astro static builds both serve
+// dist/404.html automatically for unknown routes.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Not found · Guilherme de Mello"
+  description="This page doesn't exist — but the rest of the site does."
+>
+  <section class="not-found container section">
+    <p class="eyebrow">404</p>
+    <h1 class="serif headline">This page took a detour.</h1>
+    <p class="lead muted">
+      Whatever you were looking for isn't here — it may have moved, or never
+      existed. Either way, the home page is a good place to start.
+    </p>
+    <a href="/" class="btn btn-solid">Back home</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: calc(100vh - 12rem); /* full viewport minus nav + footer approx */
+    padding-top: var(--sp-8);
+    padding-bottom: var(--sp-8);
+    gap: var(--sp-5);
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: var(--fs-mono-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .headline {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    max-width: 16ch;
+  }
+
+  .lead {
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    color: var(--text-muted);
+    max-width: 44ch;
+  }
+
+  .btn-solid {
+    margin-top: var(--sp-3);
+  }
+</style>

@@ -1,0 +1,213 @@
+---
+// src/pages/blog/index.astro
+// Blog index: lists all non-draft posts sorted by pubDate desc with tag filter.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Reveal from '../../components/Reveal.astro';
+import TagFilter from '../../components/TagFilter.astro';
+import { getCollection } from 'astro:content';
+
+// Fetch all non-draft posts, sorted by pubDate descending
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+// Derive unique tags preserving insertion order (by first appearance, desc date)
+const tagSet = new Set<string>();
+posts.forEach((post) => post.data.tags.forEach((t) => tagSet.add(t)));
+const uniqueTags = Array.from(tagSet);
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-IE', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+---
+
+<BaseLayout
+  title="Writing · Guilherme de Mello"
+  description="Notes on native iOS, Swift, architecture, and building apps at scale."
+>
+  <section class="section blog-section">
+    <div class="container">
+      <Reveal>
+        <p class="eyebrow">Writing</p>
+        <h1 class="serif blog-heading">Notes on native iOS</h1>
+        <p class="blog-sub muted">
+          Thoughts on Swift, architecture, Apple platforms, and building software that lasts.
+        </p>
+      </Reveal>
+
+      {uniqueTags.length > 0 && (
+        <Reveal class="filter-wrap">
+          <TagFilter tags={uniqueTags} />
+        </Reveal>
+      )}
+
+      {posts.length === 0 ? (
+        <Reveal>
+          <p class="muted">No posts yet — check back soon.</p>
+        </Reveal>
+      ) : (
+        <ul class="post-list" role="list">
+          {posts.map((post) => {
+            const tagsValue = post.data.tags.join(',');
+            const dateStr = formatDate(post.data.pubDate);
+            const isoDate = post.data.pubDate.toISOString().slice(0, 10);
+            return (
+              <Reveal as="li" class="post-row" data-tags={tagsValue}>
+                <a
+                  href={`/blog/${post.id}`}
+                  class="post-link"
+                  aria-label={`Read: ${post.data.title}`}
+                >
+                  <div class="post-main">
+                    <strong class="post-title serif">{post.data.title}</strong>
+                    <p class="post-excerpt muted">{post.data.description}</p>
+                    {post.data.tags.length > 0 && (
+                      <ul class="post-tags" role="list" aria-label="Tags">
+                        {post.data.tags.map((tag) => (
+                          <li class="post-tag mono">{tag}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <time
+                    class="post-date mono"
+                    datetime={isoDate}
+                  >
+                    {dateStr}
+                  </time>
+                </a>
+              </Reveal>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-section {
+    padding-top: var(--sp-9);
+    padding-bottom: var(--sp-9);
+  }
+
+  .blog-heading {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-top: var(--sp-3);
+    margin-bottom: var(--sp-4);
+    line-height: 1.1;
+  }
+
+  .blog-sub {
+    font-size: var(--fs-body);
+    max-width: 52ch;
+    margin-bottom: var(--sp-6);
+  }
+
+  .filter-wrap {
+    margin-bottom: var(--sp-8);
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Reveal wraps each li — target the li inside */
+  :global(.post-row) {
+    border-bottom: 1px solid var(--border);
+    transition: opacity 0.2s var(--ease-out);
+  }
+
+  .post-link {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-5);
+    padding: var(--sp-6) 0;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity var(--dur-hover) var(--ease-out);
+  }
+
+  .post-link:hover {
+    opacity: 0.75;
+  }
+
+  .post-link:hover .post-title {
+    color: var(--accent);
+  }
+
+  .post-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    flex: 1;
+    min-width: 0;
+  }
+
+  .post-title {
+    font-size: var(--fs-body);
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+
+  .post-excerpt {
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+    margin-top: var(--sp-2);
+    list-style: none;
+    padding: 0;
+  }
+
+  .post-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    padding: 0.1em 0.5em;
+  }
+
+  .post-date {
+    font-size: var(--fs-mono-label);
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-top: 0.15em;
+  }
+
+  @media (max-width: 760px) {
+    .post-link {
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+    .post-date {
+      padding-top: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .post-link,
+    .post-title {
+      transition: none;
+    }
+  }
+</style>

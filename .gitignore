@@ -7,6 +7,9 @@ build/
 .next/
 out/
 
+# Astro generated types
+.astro/
+
 # Environment
 .env
 .env.local
@@ -20,3 +23,12 @@ npm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+
+# Brainstorming visual companion
+.superpowers/
+
+# Private working reference (not published)
+plan.md
+
+# Personal asset staging (originals; wired copies live in public/ and src/assets/)
+/assets/

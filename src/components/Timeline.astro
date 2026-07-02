@@ -1,0 +1,145 @@
+---
+interface TimelineItem {
+  when: string;
+  role: string;
+  org: string;
+  place?: string;
+  note?: string;
+}
+
+interface Props {
+  items: TimelineItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<ol class="timeline" aria-label="Career timeline">
+  {items.map((item) => (
+    <li class="timeline-item">
+      <div class="timeline-marker" aria-hidden="true">
+        <span class="timeline-dot"></span>
+      </div>
+      <div class="timeline-content">
+        <span class="timeline-when mono">{item.when}</span>
+        <strong class="timeline-role serif">{item.role}</strong>
+        <span class="timeline-org muted">
+          {item.org}{item.place ? ` · ${item.place}` : ''}
+        </span>
+        {item.note && <p class="timeline-note">{item.note}</p>}
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .timeline {
+    list-style: none;
+    position: relative;
+    padding: 0;
+    margin: var(--sp-6) 0 0;
+  }
+
+  /* Vertical line */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 4px;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: var(--sp-5);
+    padding-bottom: var(--sp-7);
+    position: relative;
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  .timeline-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1.5px var(--accent);
+    flex-shrink: 0;
+    transition: transform var(--dur-hover) var(--ease-out),
+                box-shadow var(--dur-hover) var(--ease-out);
+  }
+
+  .timeline-item:hover .timeline-dot {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 2px var(--accent), 0 0 12px rgba(240, 81, 56, 0.3);
+  }
+
+  .timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+
+  .timeline-when {
+    font-size: var(--fs-mono-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .timeline-role {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    color: var(--text);
+    margin-top: var(--sp-1);
+  }
+
+  .timeline-org {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+
+  .timeline-note {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-top: var(--sp-2);
+    max-width: 56ch;
+  }
+
+  /* Responsive */
+  @media (max-width: 760px) {
+    .timeline-item {
+      gap: var(--sp-4);
+      padding-bottom: var(--sp-6);
+    }
+
+    .timeline-role {
+      font-size: 1.0625rem;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-dot {
+      transition: none;
+    }
+
+    .timeline-item:hover .timeline-dot {
+      transform: none;
+    }
+  }
+</style>
