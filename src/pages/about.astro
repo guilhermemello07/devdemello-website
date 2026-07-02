@@ -84,24 +84,51 @@ const chips = [
 
         <!-- Intro copy -->
         <div class="intro-copy">
-          <p class="eyebrow">About</p>
+          <p class="eyebrow">Who I am</p>
           <h1 class="serif intro-name">Guilherme de Mello</h1>
-          <p class="intro-lead">
-            Senior iOS Engineer based in Dublin. I've been building native Swift apps for 6+ years —
-            across Swift, SwiftUI, and Swift Concurrency — and shipping production AI using the Claude API.
-            My focus is on apps that are fast, crash-free, and feel right at home on Apple platforms.
-          </p>
+          <div class="intro-lead">
+            <p>
+              I'm Guilherme, an Italian-Brazilian iOS Engineer who moved from
+              Brazil to Ireland in 2024 and never looked back. I live in the
+              Irish midlands with my wife, and most of our weekends have
+              involved a car, a map, and another stretch of coastline worth
+              the drive.
+            </p>
+            <p>
+              Away from Swift, I'm usually cooking, somewhere deep in Tolkien
+              lore, or chasing the next idea for an app. I hold Italian and
+              Brazilian citizenship, speak English, Portuguese and Italian
+              fluently, and I genuinely like building and living between
+              cultures — I think it's shaped how I work as much as anything
+              technical has.
+            </p>
+          </div>
         </div>
 
       </div>
     </div>
   </Reveal>
 
-  <!-- ── The Journey ────────────────────────────────────────────── -->
+  <!-- ── What I do ──────────────────────────────────────────────── -->
   <Reveal as="section" class="section about-timeline">
     <div class="container">
-      <p class="eyebrow">The journey</p>
+      <header class="about-section-header">
+        <p class="eyebrow">What I do</p>
+        <h2 class="serif about-section-heading">The work, role by role.</h2>
+      </header>
       <Timeline items={timelineItems} />
+
+      <!-- Download CV — mirrors the contact page CTA -->
+      <div class="about-cv">
+        <a
+          href="/cv/GuilhermeMello-CV.pdf"
+          download
+          class="btn btn-solid"
+          aria-label="Download Guilherme de Mello's CV as PDF"
+        >
+          Download CV
+        </a>
+      </div>
     </div>
   </Reveal>
 
@@ -172,15 +199,38 @@ const chips = [
   }
 
   .intro-lead {
-    font-size: var(--fs-body);
-    color: var(--text-muted);
-    max-width: 52ch;
-    line-height: 1.65;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    max-width: 56ch;
   }
 
-  /* ── Timeline section ────────────────────────────────────────── */
-  .about-timeline .eyebrow {
-    margin-bottom: 0;
+  .intro-lead p {
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── Section headers (What I do, etc.) ───────────────────────── */
+  .about-section-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--sp-6);
+  }
+
+  .about-section-header .eyebrow {
+    margin-bottom: var(--sp-3);
+  }
+
+  .about-section-heading {
+    font-size: var(--fs-h2);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+
+  /* CV download button under the timeline */
+  .about-cv {
+    margin-top: var(--sp-6);
   }
 
   /* ── Speaking section ────────────────────────────────────────── */

@@ -7,9 +7,11 @@ import Hero from '../components/Hero.astro';
 import Reveal from '../components/Reveal.astro';
 import StackStrip from '../components/StackStrip.astro';
 import WorkCard from '../components/WorkCard.astro';
-import StatBand from '../components/StatBand.astro';
 import WritingTeaser from '../components/WritingTeaser.astro';
 import ContactLinks from '../components/ContactLinks.astro';
+import foodlensLogo from '../assets/foodlens-logo.png';
+import jornadaLogo from '../assets/jornada-logo.png';
+import folioLogo from '../assets/folio-logo.png';
 ---
 
 <BaseLayout
@@ -19,10 +21,38 @@ import ContactLinks from '../components/ContactLinks.astro';
   <!-- Section 1: Hero — signature sticky-pin scrub -->
   <Hero />
 
+  <!-- Section 1b: Intro / bio --------------------------------------------- -->
+  <Reveal as="section" class="section-intro">
+    <div class="container section">
+      <p class="eyebrow section-eyebrow">Who's writing this</p>
+      <div class="intro-prose">
+        <p>
+          6+ years writing iOS end to end. Currently at EIDA Solutions in
+          Ireland, I own the full platform and lead the implementation of
+          ambitious features, like Slopes, the migration of login to Auth0,
+          and the modernisation of the platform from RxSwift&nbsp;/&nbsp;UIKit
+          to Combine&nbsp;/&nbsp;SwiftUI.
+        </p>
+        <p>
+          I care about the things that actually break apps in production,
+          data races, retain cycles, and the memory issues that hide until
+          you're at scale.
+        </p>
+        <p>
+          On the side I ship AI-powered apps on the App Store. I write, I
+          speak at conferences like iOSDevUK, and I've authored a book on
+          native iOS development.
+        </p>
+      </div>
+    </div>
+  </Reveal>
+
   <!-- Section 2: Stack ---------------------------------------------------- -->
   <Reveal as="section" class="section-stack">
     <div class="container section">
-      <p class="eyebrow section-eyebrow">The toolkit</p>
+      <header class="section-header">
+        <h2 class="serif section-heading">The toolkit.</h2>
+      </header>
       <StackStrip />
     </div>
   </Reveal>
@@ -35,54 +65,40 @@ import ContactLinks from '../components/ContactLinks.astro';
         <h2 class="serif section-heading">Apps built to last.</h2>
       </header>
 
-      <div class="work-grid">
+      <div class="work-scroller" role="list">
         <!-- FoodLens -->
         <WorkCard
           title="FoodLens"
-          blurb="AI food intelligence — scan a barcode and get an instant health score powered by Claude and on-device Foundation Models."
-          meta="SwiftUI · Claude API · RevenueCat · App Store"
-          href="#"
+          blurb="AI food intelligence, scan a barcode and get an instant health score powered by Claude and on-device Foundation Models."
+          meta="SwiftUI · Claude API · RevenueCat"
+          href="https://apps.apple.com/ie/app/foodlens-ai-food-scanner/id6759176098"
           cta="View on App Store →"
+          icon={foodlensLogo}
+          tint="#62B33F"
         />
-        <!-- TODO: replace href with real App Store link -->
 
         <!-- Jornada -->
         <WorkCard
           title="Jornada"
           blurb="Personalised AI trip optimisation, fully native and offline-first. Plans adapt to your pace, not a server's."
           meta="SwiftUI · Claude API · MVVM-C"
-          href="#"
+          icon={jornadaLogo}
+          tint="#E8742C"
+          cta="In Development"
         />
         <!-- TODO: replace href when project page is live -->
 
         <!-- Folio -->
         <WorkCard
           title="Folio"
-          blurb="A Strava for readers — track books, log reading sessions, and share your progress with a community of fellow readers."
+          blurb="A Strava for readers, track books, log reading sessions, and share your progress with a community of fellow readers."
           meta="SwiftUI · SwiftData · Social"
-          href="#"
+          icon={folioLogo}
+          tint="#9B4A47"
+          cta="In Development"
         />
         <!-- TODO: replace blurb/meta/href with real Folio details when ready -->
-
-
-        <!-- View all card -->
-        <WorkCard
-          title="View all work"
-          blurb=""
-          meta=""
-          href="#"
-          viewAll
-        />
-        <!-- TODO: replace href with /work page once Task 9 lands -->
       </div>
-    </div>
-  </Reveal>
-
-  <!-- Section 4: Credibility ----------------------------------------------- -->
-  <Reveal as="section" class="section-stats">
-    <div class="container section">
-      <p class="eyebrow section-eyebrow">By the numbers</p>
-      <StatBand />
     </div>
   </Reveal>
 
@@ -146,6 +162,27 @@ import ContactLinks from '../components/ContactLinks.astro';
   }
 
   /* ==========================================================================
+     Section 1b — Intro / bio prose
+     ========================================================================== */
+  .intro-prose {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    max-width: 62ch;
+  }
+
+  .intro-prose p {
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .intro-prose p:first-child {
+    /* Lead paragraph reads slightly stronger than the rest */
+    color: var(--text);
+  }
+
+  /* ==========================================================================
      Section 2 — Stack
      Subtle surface bg to visually separate from the hero.
      ========================================================================== */
@@ -156,28 +193,42 @@ import ContactLinks from '../components/ContactLinks.astro';
   }
 
   /* ==========================================================================
-     Section 3 — Work Grid
+     Section 3 — Work Scroller
+     Horizontal scroll-snap row. On wide screens the three cards fill the row;
+     on narrower viewports they become a swipeable, snapping carousel.
      ========================================================================== */
-  .work-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+  .work-scroller {
+    display: flex;
+    align-items: stretch; /* all cards share the tallest card's height */
     gap: var(--sp-5);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--sp-4);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    /* overflow-x:auto forces overflow-y to clip too — so the hover lift and
+       box-shadow would be cut off. We inflate the scroll viewport with padding
+       and cancel it with equal negative margins, giving the shadow room to
+       render without shifting the row's position in the layout. Inline bleed
+       stays under the container's min padding (1.25rem) to avoid x-overflow. */
+    padding-block: var(--sp-6);
+    padding-inline: var(--sp-4);
+    margin-block: calc(-1 * var(--sp-6));
+    margin-inline: calc(-1 * var(--sp-4));
   }
 
-  @media (max-width: 760px) {
-    .work-grid {
-      grid-template-columns: 1fr;
+  /* :global() is required — the cards are rendered by the WorkCard component,
+     so a plain scoped selector here would not match them and the flex sizing
+     would silently not apply (cards would size to content, unequal widths). */
+  .work-scroller > :global(.work-card) {
+    flex: 0 0 calc((100% - 2 * var(--sp-5)) / 3);
+    scroll-snap-align: start;
+  }
+
+  @media (max-width: 900px) {
+    .work-scroller > :global(.work-card) {
+      flex-basis: clamp(260px, 78%, 360px);
     }
-  }
-
-  /* ==========================================================================
-     Section 4 — Stats
-     Subtle surface bg for rhythm.
-     ========================================================================== */
-  .section-stats {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
   }
 
   /* ==========================================================================

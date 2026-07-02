@@ -217,7 +217,7 @@ pre {
 .btn-ghost:hover {
   background: var(--surface);
   transform: translateY(-2px);
-  border-color: var(--text-dim);
+  border-color: var(--accent);
 }
 
 /* --------------------------------------------------------------------------
