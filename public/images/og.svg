@@ -8,7 +8,7 @@
   <!-- Name -->
   <text x="100" y="135" font-family="Georgia, serif" font-size="52" font-weight="400" fill="#F0EFED">Guilherme de Mello</text>
   <!-- Title -->
-  <text x="100" y="185" font-family="system-ui, sans-serif" font-size="24" font-weight="400" fill="#8A8A8A">Senior iOS Engineer · Dublin</text>
+  <text x="100" y="185" font-family="system-ui, sans-serif" font-size="24" font-weight="400" fill="#8A8A8A">Senior iOS Engineer · Madrid</text>
   <!-- Tagline -->
   <text x="100" y="480" font-family="system-ui, sans-serif" font-size="20" fill="#8A8A8A">devdemello.com</text>
   <!-- Monogram badge -->
